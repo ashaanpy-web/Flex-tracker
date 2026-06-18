@@ -1,5 +1,7 @@
+import { useState } from "react";
 import "./index.css";
 export default function App() {
+  const { activeTab, setActiveTab } = useState("dashboard");
   return (
     <>
       <div className="bg-slate-200/80 min-h-screen relative pt-5 pb-5 pl-3 flex overflow-hidden costum-scrollbar ">
@@ -17,15 +19,32 @@ export default function App() {
                   Flextracker
                 </p>
               </div>
-              <div className="hover:bg-white text-black font-bold text-xl p-3 rounded-2xl bg-white/20 border border-white/30 mt-5 flex items-center gap-3">
-                <i class="fa-solid fa-house"></i>
-                Dashboard
+              <div
+                onClick={() => setActiveTab("dashboard")}
+                className="hover:bg-white text-black font-bold text-xl p-3 rounded-2xl bg-white/20 border border-white/30 mt-5 flex items-center gap-3"
+              >
+                {activeTab == "dashboard" && (
+                  <>
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                  </>
+                )}
               </div>
-              <div className="text-black font-bold text-xl p-3 rounded-2xl bg-white/20 border border-white/30 mt-5 flex items-center gap-3">
-                <i class="fa-solid fa-dumbbell"></i>
-                Workout log
+              <div
+                onClick={() => setActiveTab("workout")}
+                className="text-black font-bold text-xl p-3 rounded-2xl bg-white/20 border border-white/30 mt-5 flex items-center gap-3"
+              >
+                {activeTab == "workout" && (
+                  <>
+                    <i class="fa-solid fa-dumbbell"></i>
+                    Workout log
+                  </>
+                )}
               </div>
-              <div className="text-black font-bold text-xl p-3 rounded-2xl bg-white/20 border border-white/30 mt-5 flex items-center gap-3">
+              <div
+                onClick={() => setActiveTab("settings")}
+                className="text-black font-bold text-xl p-3 rounded-2xl bg-white/20 border border-white/30 mt-5 flex items-center gap-3"
+              >
                 <i class="fa-solid fa-gear"></i>
                 Settings
               </div>
