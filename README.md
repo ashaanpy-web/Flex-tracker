@@ -30,5 +30,5 @@ Agar aap apne computer par ise run karna chahte hain, toh ye steps follow karein
 
 1. **Clone the repo:**
    ```bash
-   git clone [https://github.com/aapka-username/flex-tracker.git](https://github.com/ashaanpy-web/Flex-tracker.git)
+   git clone [https://github.com/ashaanpy-web/Flex-tracker.git](https://github.com/ashaanpy-web/Flex-tracker.git)
    ```
