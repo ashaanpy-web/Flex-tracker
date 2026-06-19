@@ -2,27 +2,6 @@ import { useState, useEffect } from "react";
 import "./index.css";
 
 export default function App() {
-  // Dark/Light Mode state (Default hum custom slate look rakhenge)
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("flex_theme") === "dark";
-  });
-
-  // Theme toggle function
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
-
-  // Effect jo document body par dark class toggle karega aur save karega
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (darkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("flex_theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("flex_theme", "light");
-    }
-  }, [darkMode]);
   // AVAILABLE TABS: "dashboard", "workout", "logger", "settings"
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -250,6 +229,7 @@ export default function App() {
           ></div>
         </div>
 
+        {/* Sidebar */}
         <aside className="flex flex-col z-10 bg-white/5 border relative border-white/40 backdrop-blur-3xl w-60 h-[calc(100vh-40px)] rounded-3xl pr-2 pl-2 shadow-2xl no-scrollbar">
           <div className="mt-6">
             <div className="flex items-center gap-3 pl-3 mb-8">
@@ -315,7 +295,7 @@ export default function App() {
 
         {/* MAIN CONTAINER */}
         <main className="flex-1 overflow-y-auto z-10 p-8 overflow-x-hidden no-scrollbar">
-          {/*  DASHBOARD VIEW */}
+          {/* 🟢 DASHBOARD VIEW */}
           {activeTab == "dashboard" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
               <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase mb-2">
@@ -388,7 +368,7 @@ export default function App() {
               </div>
 
               <div className="flex items-center mt-6">
-                <div className="h-80 w-172 pr-5 flex">
+                <div className="h-80 w-178 pr-5 flex">
                   <div className="h-full w-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-6 flex flex-col costum-scrollbar">
                     <p className="text-sm font-bold tracking-wider text-slate-800 uppercase mb-4">
                       Today's GOALS

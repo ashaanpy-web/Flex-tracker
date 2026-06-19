@@ -1,36 +1,46 @@
 @import "tailwindcss";
-.costum-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-/* Custom utility class to hide scrollbar */
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* Safari aur Chrome (Brave, Edge) ke liye */
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE aur Edge ke liye */
-  scrollbar-width: none; /* Firefox ke liye */
-}
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap");
-@import "tailwindcss";
 
 @theme {
   --font-sans: "Plus Jakarta Sans", sans-serif;
+  /* Tailwind v4 ko class-based dark mode batane ka sahi tareeqa */
+  --variant-dark: .dark;
 }
-/* Pure browser ki default scrollbars ko hide karne ke liye */
+
 html,
 body {
   overflow: hidden;
   height: 100%;
   margin: 0;
   padding: 0;
+  /* Smooth transitions jab pooray page ka background badle */
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
 }
 
-/* Agar aap ne custom class banayi hai to uski spelling custom kar lein */
+/* Custom scrollbars ko hide karne ke liye utilities */
+.costum-scrollbar::-webkit-scrollbar,
 .no-scrollbar::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  display: none;
 }
+
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
+  -ms-overflow-style: none; /* IE aur Edge */
   scrollbar-width: none; /* Firefox */
+}
+@import "tailwindcss";
+
+@theme {
+  --variant-dark: .dark;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* Ye line ensure karti hai ke background change smoothly ho */
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
 }
