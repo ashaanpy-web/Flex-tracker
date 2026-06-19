@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./index.css";
 
 export default function App() {
@@ -12,9 +12,13 @@ export default function App() {
   const [currentProtein, setProtein] = useState(140);
   const [targetProtein, setTargetProtein] = useState(150);
 
-  // 💥 WATER INTAKE STATE (Naya state paani ke liye)
+  // 💥 WATER INTAKE STATE
   const [waterGlasses, setWaterGlasses] = useState(3);
   const targetWaterGlasses = 8; // Daily target 8 glasses
+
+  // ⏱️ REST TIMER STATES (Nayi states rest timer ke liye)
+  const [timeLeft, setTimeLeft] = useState(60); // Default 60 seconds (1 minute) rest
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   // Settings temporary states
   const [tempName, setTempName] = useState(profileName);
@@ -35,6 +39,32 @@ export default function App() {
     (currentProtein / targetProtein) * 100,
     100,
   );
+
+  // ⏱️ TIMER CONTROL LOGIC
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setIsTimerRunning(false);
+    }
+    return () => clearInterval(interval); // Cleanup memory leak se bachne ke liye
+  }, [isTimerRunning, timeLeft]);
+
+  const toggleTimer = () => setIsTimerRunning(!isTimerRunning);
+  const resetTimer = () => {
+    setIsTimerRunning(false);
+    setTimeLeft(60); // Reset back to 1 minute
+  };
+
+  // Plain number ko clock style rendering (MM:SS) dainay ka helper function
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
 
   const getGLowClasses = () => {
     if (activeTab == "dashboard") {
@@ -84,13 +114,13 @@ export default function App() {
     setRepsInput("");
   };
 
-  // WATER ACTIONS (Paani kam ya zyada karne ke functions)
+  // WATER ACTIONS
   const addWaterGlass = () => {
     setWaterGlasses((prev) => prev + 1);
   };
 
   const removeWaterGlass = () => {
-    setWaterGlasses((prev) => Math.max(0, prev - 1)); // 0 se niche na jaye
+    setWaterGlasses((prev) => Math.max(0, prev - 1));
   };
 
   // SAVE FUNCTIONS FOR SETTINGS
@@ -270,7 +300,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* 💥 CHOTA VALA DIV: WATER INTAKE TRACKER */}
+                {/* CHOTA VALA DIV: WATER INTAKE TRACKER */}
                 <div className="h-80 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2 p-4 flex flex-col items-center justify-between">
                   <div className="text-center w-full">
                     <p className="text-lg font-bold tracking-tight text-black">
@@ -388,8 +418,45 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-                {/* Workout view mein bhi right card ko symmetry ke liye khali chorein ya same tracker render kar sakte hain */}
-                <div className="h-100 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2"></div>
+
+                {/* ⏱️ LIVE REST TIMER CARD (Symmetry box populated) */}
+                <div className="h-100 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2 p-4 flex flex-col items-center justify-between">
+                  <div className="text-center w-full">
+                    <p className="text-lg font-bold tracking-tight text-black">
+                      Rest Time
+                    </p>
+                    <div className="mt-6 text-rose-500">
+                      <i
+                        className={`fa-solid fa-stopwatch text-4xl ${isTimerRunning ? "animate-pulse" : ""}`}
+                      ></i>
+                    </div>
+                    {/* Dynamic pulse effect jab count down 10 seconds se kam ho */}
+                    <p
+                      className={`mt-6 text-3xl font-extrabold tracking-wider transition-all duration-300 ${timeLeft <= 10 ? "text-red-600 scale-105 animate-pulse" : "text-slate-900"}`}
+                    >
+                      {formatTime(timeLeft)}
+                    </p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-2">
+                      {isTimerRunning ? "Resting..." : "Paused"}
+                    </p>
+                  </div>
+
+                  {/* Timer Controls */}
+                  <div className="flex flex-col gap-2 w-full mb-2 px-1">
+                    <button
+                      onClick={toggleTimer}
+                      className={`w-full h-10 rounded-xl font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-95 text-white ${isTimerRunning ? "bg-amber-500 border border-amber-400 hover:bg-amber-600" : "bg-emerald-600 border border-emerald-500 hover:bg-emerald-700"}`}
+                    >
+                      {isTimerRunning ? "Pause" : "Start Rest"}
+                    </button>
+                    <button
+                      onClick={resetTimer}
+                      className="w-full h-9 rounded-xl bg-white/30 border border-white/50 text-slate-700 font-semibold text-xs flex items-center justify-center hover:bg-white/50 active:scale-95 transition-all"
+                    >
+                      Reset (1m)
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
