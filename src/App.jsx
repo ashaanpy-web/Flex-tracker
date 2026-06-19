@@ -368,7 +368,7 @@ export default function App() {
               </div>
 
               <div className="flex items-center mt-6">
-                <div className="h-80 w-178 pr-5 flex">
+                <div className="h-80 w-172 pr-5 flex">
                   <div className="h-full w-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-6 flex flex-col costum-scrollbar">
                     <p className="text-sm font-bold tracking-wider text-slate-800 uppercase mb-4">
                       Today's GOALS
