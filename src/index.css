@@ -17,3 +17,20 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", sans-serif;
 }
+/* Pure browser ki default scrollbars ko hide karne ke liye */
+html,
+body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Agar aap ne custom class banayi hai to uski spelling custom kar lein */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./index.css";
 
 export default function App() {
+  // AVAILABLE TABS: "dashboard", "workout", "logger", "settings"
   const [activeTab, setActiveTab] = useState("dashboard");
 
   // 💾 LOCAL STORAGE SE INITIAL DATA LOAD KARNA
@@ -36,6 +37,10 @@ export default function App() {
   // REST TIMER STATES
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  // Manual custom inputs ki states
+  const [manualCal, setManualCal] = useState("");
+  const [manualProt, setManualProt] = useState("");
 
   // Settings temporary states
   const [tempName, setTempName] = useState(profileName);
@@ -102,6 +107,7 @@ export default function App() {
     100,
   );
 
+  // DYNAMIC GLOWS ACCORDING TO TABS
   const getGLowClasses = () => {
     if (activeTab == "dashboard") {
       return {
@@ -115,6 +121,13 @@ export default function App() {
         glow1: "from-red-500/40 to-orange-500/20",
         glow2: "from-amber-500/30 to-yellow-400/20",
         glow3: "from-rose-500/30 to-purple-600/20",
+      };
+    }
+    if (activeTab == "logger") {
+      return {
+        glow1: "from-orange-400/40 to-amber-400/20",
+        glow2: "from-sky-400/30 to-cyan-500/20",
+        glow3: "from-yellow-300/20 to-red-500/20",
       };
     }
     if (activeTab == "settings") {
@@ -158,13 +171,28 @@ export default function App() {
   const removeWaterGlass = () =>
     setWaterGlasses((prev) => Math.max(0, prev - 1));
 
-  // 🥩 QUICK MACROS LOGGER LOGIC
+  // 🥩 MACROS ACTIONS
   const handleQuickLog = (cal, prot) => {
     setCalorie((prev) => prev + cal);
     setProtein((prev) => prev + prot);
   };
 
-  // RESET DAILY INTAKE BUTTON (Bonus function for testing)
+  const handleManualLog = (action) => {
+    const calValue = Number(manualCal) || 0;
+    const protValue = Number(manualProt) || 0;
+
+    if (action === "add") {
+      setCalorie((prev) => prev + calValue);
+      setProtein((prev) => prev + protValue);
+    } else if (action === "subtract") {
+      setCalorie((prev) => Math.max(0, prev - calValue));
+      setProtein((prev) => Math.max(0, prev - protValue));
+    }
+
+    setManualCal("");
+    setManualProt("");
+  };
+
   const handleResetIntake = () => {
     setCalorie(0);
     setProtein(0);
@@ -213,12 +241,7 @@ export default function App() {
 
             <div className="flex flex-col gap-2">
               <div
-                onClick={() => {
-                  setActiveTab("dashboard");
-                  setTempName(profileName);
-                  setTempCalorie(targetCalorie);
-                  setTempProtein(targetProtein);
-                }}
+                onClick={() => setActiveTab("dashboard")}
                 className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
                   activeTab === "dashboard"
                     ? "bg-white border-white text-slate-900 shadow-xs"
@@ -229,12 +252,7 @@ export default function App() {
               </div>
 
               <div
-                onClick={() => {
-                  setActiveTab("workout");
-                  setTempName(profileName);
-                  setTempCalorie(targetCalorie);
-                  setTempProtein(targetProtein);
-                }}
+                onClick={() => setActiveTab("workout")}
                 className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
                   activeTab === "workout"
                     ? "bg-white border-white text-slate-900 shadow-xs"
@@ -244,8 +262,25 @@ export default function App() {
                 <i className="fa-solid fa-dumbbell text-xs"></i> Workout log
               </div>
 
+              {/* 🟢 NEW SIDEBAR LOGGER TAB */}
               <div
-                onClick={() => setActiveTab("settings")}
+                onClick={() => setActiveTab("logger")}
+                className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
+                  activeTab === "logger"
+                    ? "bg-white border-white text-slate-900 shadow-xs"
+                    : "bg-white/10 border-white/20 text-slate-700 hover:bg-white/30"
+                }`}
+              >
+                <i className="fa-solid fa-utensils text-xs"></i> Macro Logger
+              </div>
+
+              <div
+                onClick={() => {
+                  setActiveTab("settings");
+                  setTempName(profileName);
+                  setTempCalorie(targetCalorie);
+                  setTempProtein(targetProtein);
+                }}
                 className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
                   activeTab === "settings"
                     ? "bg-white border-white text-slate-900 shadow-xs"
@@ -263,17 +298,9 @@ export default function App() {
           {/* 🟢 DASHBOARD VIEW */}
           {activeTab == "dashboard" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
-              <div className="flex justify-between items-center mb-2">
-                <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase">
-                  WELCOME BACK, {profileName}!
-                </h1>
-                <button
-                  onClick={handleResetIntake}
-                  className="text-[10px] font-bold tracking-wider uppercase bg-white/40 border border-white/60 text-slate-700 px-3 py-1.5 rounded-xl hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-2xs active:scale-95"
-                >
-                  Reset Today's Macros
-                </button>
-              </div>
+              <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase mb-2">
+                WELCOME BACK, {profileName}!
+              </h1>
 
               <div className="flex gap-6 mt-6">
                 {/* Calories Card */}
@@ -340,34 +367,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 🥩 QUICK LOGGER COMPONENT (New Glassmorphic Bar) */}
-              <div className="w-[712px] bg-white/20 border border-white/40 backdrop-blur-3xl rounded-2xl p-3.5 mt-4 flex items-center justify-between shadow-lg">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 pl-1">
-                  Quick Food Log:
-                </span>
-                <div className="flex gap-2.5">
-                  <button
-                    onClick={() => handleQuickLog(70, 6)}
-                    className="bg-white/60 border border-white hover:bg-white text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-2xs active:scale-95"
-                  >
-                    🥚 Whole Egg (+6g P)
-                  </button>
-                  <button
-                    onClick={() => handleQuickLog(165, 30)}
-                    className="bg-white/60 border border-white hover:bg-white text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-2xs active:scale-95"
-                  >
-                    🍗 Chicken Breast 100g (+30g P)
-                  </button>
-                  <button
-                    onClick={() => handleQuickLog(200, 25)}
-                    className="bg-white/60 border border-white hover:bg-white text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-2xs active:scale-95"
-                  >
-                    🥛 Protein Shake (+25g P)
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center mt-4">
+              <div className="flex items-center mt-6">
                 <div className="h-80 w-178 pr-5 flex">
                   <div className="h-full w-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-6 flex flex-col costum-scrollbar">
                     <p className="text-sm font-bold tracking-wider text-slate-800 uppercase mb-4">
@@ -559,6 +559,138 @@ export default function App() {
                       className="w-full h-8 rounded-xl bg-white/40 border border-white/60 text-slate-700 font-bold text-[10px] tracking-wider uppercase hover:bg-white/50 active:scale-95 transition-all"
                     >
                       Reset (1m)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 🍳 NEW MACRO LOGGER VIEW (Fully isolated page) */}
+          {activeTab == "logger" && (
+            <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
+              <div className="flex justify-between items-center w-178 mb-6">
+                <div>
+                  <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase">
+                    Nutrition Tracker
+                  </h1>
+                  <p className="text-xs font-medium text-slate-500 mt-0.5">
+                    Manage your daily caloric and protein intake
+                  </p>
+                </div>
+                <button
+                  onClick={handleResetIntake}
+                  className="text-[10px] font-bold tracking-wider uppercase bg-white/40 border border-white/60 text-slate-700 px-3 py-1.5 rounded-xl hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-2xs active:scale-95"
+                >
+                  Reset Intake (0)
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4 w-178">
+                {/* Current Status Mini-Card */}
+                <div className="p-4 bg-white/30 border border-white/50 rounded-2xl backdrop-blur-3xl flex justify-around text-center shadow-xs">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">
+                      Current Calories
+                    </p>
+                    <p className="text-lg font-extrabold text-slate-900 mt-0.5">
+                      {currentCalorie} / {targetCalorie} kcal
+                    </p>
+                  </div>
+                  <div className="w-px bg-black/10 h-8 self-center"></div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">
+                      Current Protein
+                    </p>
+                    <p className="text-lg font-extrabold text-slate-900 mt-0.5">
+                      {currentProtein}g / {targetProtein}g
+                    </p>
+                  </div>
+                </div>
+
+                {/* 1. Quick Presets Box */}
+                <div className="p-5 bg-white/10 border border-white/40 backdrop-blur-3xl rounded-3xl shadow-xl">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3.5">
+                    Quick Food Presets
+                  </p>
+                  <div className="flex flex-wrap gap-2.5">
+                    <button
+                      onClick={() => handleQuickLog(70, 6)}
+                      className="bg-white/60 border border-white hover:bg-white text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-2xs active:scale-95 flex items-center gap-2"
+                    >
+                      <span>Egg (Whole)</span>{" "}
+                      <span className="text-[10px] bg-slate-200 px-1.5 py-0.5 rounded-md text-slate-600">
+                        +6g P
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => handleQuickLog(165, 30)}
+                      className="bg-white/60 border border-white hover:bg-white text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-2xs active:scale-95 flex items-center gap-2"
+                    >
+                      <span>Chicken Breast 100g</span>{" "}
+                      <span className="text-[10px] bg-slate-200 px-1.5 py-0.5 rounded-md text-slate-600">
+                        +30g P
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => handleQuickLog(200, 25)}
+                      className="bg-white/60 border border-white hover:bg-white text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-2xs active:scale-95 flex items-center gap-2"
+                    >
+                      <span>Protein Shake</span>{" "}
+                      <span className="text-[10px] bg-slate-200 px-1.5 py-0.5 rounded-md text-slate-600">
+                        +25g P
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2. Detailed Custom Form */}
+                <div className="p-5 bg-white/10 border border-white/40 backdrop-blur-3xl rounded-3xl shadow-xl flex flex-col gap-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                      Detailed Custom Log
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium mt-0.5">
+                      Manually add or subtract precise nutrient metrics
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center bg-white/50 border border-black/5 rounded-xl px-3 py-2 w-1/2">
+                      <i className="fa-solid fa-fire text-orange-500 text-sm mr-2.5"></i>
+                      <input
+                        type="number"
+                        value={manualCal}
+                        onChange={(e) => setManualCal(e.target.value)}
+                        placeholder="Calories (kcal)"
+                        className="w-full bg-transparent text-xs font-bold focus:outline-hidden text-slate-800 placeholder:text-slate-400"
+                      />
+                    </div>
+
+                    <div className="flex items-center bg-white/50 border border-black/5 rounded-xl px-3 py-2 w-1/2">
+                      <i className="fa-solid fa-shrimp text-sky-500 text-sm mr-2.5"></i>
+                      <input
+                        type="number"
+                        value={manualProt}
+                        onChange={(e) => setManualProt(e.target.value)}
+                        placeholder="Protein (grams)"
+                        className="w-full bg-transparent text-xs font-bold focus:outline-hidden text-slate-800 placeholder:text-slate-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 justify-end mt-1">
+                    <button
+                      onClick={() => handleManualLog("subtract")}
+                      className="bg-white/40 border border-white/60 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-2xs active:scale-95 flex items-center gap-2"
+                    >
+                      <i className="fa-solid fa-minus text-[10px]"></i> Subtract
+                    </button>
+                    <button
+                      onClick={() => handleManualLog("add")}
+                      className="bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold px-6 py-2 rounded-xl transition-all shadow-md active:scale-95 uppercase tracking-wider flex items-center gap-2"
+                    >
+                      <i className="fa-solid fa-plus text-[10px]"></i> Add Log
                     </button>
                   </div>
                 </div>
