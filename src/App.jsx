@@ -4,19 +4,32 @@ import "./index.css";
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // DYNAMIC PROFILE STATES
-  const [profileName, setProfileName] = useState("Ashaan");
-  const [currentCalorie, setCalorie] = useState(2000);
-  const [targetCalorie, setTargetCalorie] = useState(3000);
+  // 1. 💾 LOCAL STORAGE SE INITIAL DATA LOAD KARNA
+  const [profileName, setProfileName] = useState(() => {
+    return localStorage.getItem("flex_profileName") || "Ashaan";
+  });
+
+  const [currentCalorie, setCalorie] = useState(2000); // Daily intake resets generally, but targets stay
+  const [targetCalorie, setTargetCalorie] = useState(() => {
+    return Number(localStorage.getItem("flex_targetCalorie")) || 3000;
+  });
 
   const [currentProtein, setProtein] = useState(140);
-  const [targetProtein, setTargetProtein] = useState(150);
+  const [targetProtein, setTargetProtein] = useState(() => {
+    return Number(localStorage.getItem("flex_targetProtein")) || 150;
+  });
 
-  // 💥 WATER INTAKE STATE
-  const [waterGlasses, setWaterGlasses] = useState(3);
+  const [waterGlasses, setWaterGlasses] = useState(() => {
+    return Number(localStorage.getItem("flex_waterGlasses")) || 0;
+  });
   const targetWaterGlasses = 8;
 
-  // ⏱️ REST TIMER STATES
+  const [workoutList, setWorkoutList] = useState(() => {
+    const savedWorkouts = localStorage.getItem("flex_workoutList");
+    return savedWorkouts ? JSON.parse(savedWorkouts) : [];
+  });
+
+  // REST TIMER STATES
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
@@ -31,16 +44,22 @@ export default function App() {
     protein: false,
   });
 
-  const caloriePercentage = Math.min(
-    (currentCalorie / targetCalorie) * 100,
-    100,
-  );
-  const proteinPercentage = Math.min(
-    (currentProtein / targetProtein) * 100,
-    100,
-  );
+  // 2. 💾 EFFECT: DATA KO LOCAL STORAGE MEIN SAVE KARNA
+  useEffect(() => {
+    localStorage.setItem("flex_profileName", profileName);
+    localStorage.setItem("flex_targetCalorie", targetCalorie.toString());
+    localStorage.setItem("flex_targetProtein", targetProtein.toString());
+  }, [profileName, targetCalorie, targetProtein]);
 
-  // ⏱️ TIMER CONTROL LOGIC
+  useEffect(() => {
+    localStorage.setItem("flex_waterGlasses", waterGlasses.toString());
+  }, [waterGlasses]);
+
+  useEffect(() => {
+    localStorage.setItem("flex_workoutList", JSON.stringify(workoutList));
+  }, [workoutList]);
+
+  // TIMER CONTROL LOGIC
   useEffect(() => {
     let interval = null;
     if (isTimerRunning && timeLeft > 0) {
@@ -64,6 +83,15 @@ export default function App() {
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
+
+  const caloriePercentage = Math.min(
+    (currentCalorie / targetCalorie) * 100,
+    100,
+  );
+  const proteinPercentage = Math.min(
+    (currentProtein / targetProtein) * 100,
+    100,
+  );
 
   const getGLowClasses = () => {
     if (activeTab == "dashboard") {
@@ -92,7 +120,6 @@ export default function App() {
 
   const glows = getGLowClasses();
 
-  const [workoutList, setWorkoutList] = useState([]);
   const [exerciseName, setExerciseName] = useState("");
   const [weightInput, setWeightInput] = useState("");
   const [repsInput, setRepsInput] = useState("");
@@ -113,12 +140,15 @@ export default function App() {
     setRepsInput("");
   };
 
-  // WATER ACTIONS
+  // 🗑️ DELETE WORKOUT LOGIC (Bonus clean feature)
+  const handleDeleteWorkout = (id) => {
+    setWorkoutList(workoutList.filter((item) => item.id !== id));
+  };
+
   const addWaterGlass = () => setWaterGlasses((prev) => prev + 1);
   const removeWaterGlass = () =>
     setWaterGlasses((prev) => Math.max(0, prev - 1));
 
-  // SAVE FUNCTIONS FOR SETTINGS
   const handleSaveName = () => {
     if (tempName.trim()) setProfileName(tempName);
     setEditMode({ ...editMode, name: false });
@@ -178,7 +208,12 @@ export default function App() {
               </div>
 
               <div
-                onClick={() => setActiveTab("workout")}
+                onClick={() => {
+                  setActiveTab("workout");
+                  setTempName(profileName);
+                  setTempCalorie(targetCalorie);
+                  setTempProtein(targetProtein);
+                }}
                 className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
                   activeTab === "workout"
                     ? "bg-white border-white text-slate-900 shadow-xs"
@@ -286,7 +321,7 @@ export default function App() {
                     <div className="flex-1 overflow-y-auto pr-2 min-h-0 costum-scrollbar flex flex-col gap-3">
                       {workoutList.length === 0 ? (
                         <p className="text-slate-500 text-xs font-medium italic p-4 text-center bg-white/5 rounded-2xl border border-white/10">
-                          NO logs for today ,Please add logs in workout tab
+                          Aaj ka koi goal nahi hai, workout log mein add karein!
                         </p>
                       ) : (
                         workoutList.map((workout) => (
@@ -401,7 +436,7 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* DYNAMIC LIST */}
+                      {/* DYNAMIC LIST WITH DELETE OPTION */}
                       <div className="overflow-y-auto mt-4 pr-1 flex flex-col gap-2 flex-1 costum-scrollbar">
                         {workoutList.length === 0 ? (
                           <p className="text-slate-500 text-xs font-medium italic p-4 text-center bg-white/5 rounded-2xl border border-white/10">
@@ -421,7 +456,12 @@ export default function App() {
                                   {workout.weight}kg × {workout.reps} Reps
                                 </p>
                               </div>
-                              <i className="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
+                              <button
+                                onClick={() => handleDeleteWorkout(workout.id)}
+                                className="text-slate-400 hover:text-red-500 transition-colors p-2 cursor-pointer"
+                              >
+                                <i className="fa-solid fa-trash-can text-sm"></i>
+                              </button>
                             </div>
                           ))
                         )}
