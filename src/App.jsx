@@ -4,17 +4,21 @@ import "./index.css";
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // 1. 💾 LOCAL STORAGE SE INITIAL DATA LOAD KARNA
+  // 💾 LOCAL STORAGE SE INITIAL DATA LOAD KARNA
   const [profileName, setProfileName] = useState(() => {
     return localStorage.getItem("flex_profileName") || "Ashaan";
   });
 
-  const [currentCalorie, setCalorie] = useState(2000); // Daily intake resets generally, but targets stay
+  const [currentCalorie, setCalorie] = useState(() => {
+    return Number(localStorage.getItem("flex_currentCalorie")) || 0;
+  });
   const [targetCalorie, setTargetCalorie] = useState(() => {
     return Number(localStorage.getItem("flex_targetCalorie")) || 3000;
   });
 
-  const [currentProtein, setProtein] = useState(140);
+  const [currentProtein, setProtein] = useState(() => {
+    return Number(localStorage.getItem("flex_currentProtein")) || 0;
+  });
   const [targetProtein, setTargetProtein] = useState(() => {
     return Number(localStorage.getItem("flex_targetProtein")) || 150;
   });
@@ -44,12 +48,17 @@ export default function App() {
     protein: false,
   });
 
-  // 2. 💾 EFFECT: DATA KO LOCAL STORAGE MEIN SAVE KARNA
+  // 💾 EFFECT: DATA KO LOCAL STORAGE MEIN SAVE KARNA
   useEffect(() => {
     localStorage.setItem("flex_profileName", profileName);
     localStorage.setItem("flex_targetCalorie", targetCalorie.toString());
     localStorage.setItem("flex_targetProtein", targetProtein.toString());
   }, [profileName, targetCalorie, targetProtein]);
+
+  useEffect(() => {
+    localStorage.setItem("flex_currentCalorie", currentCalorie.toString());
+    localStorage.setItem("flex_currentProtein", currentProtein.toString());
+  }, [currentCalorie, currentProtein]);
 
   useEffect(() => {
     localStorage.setItem("flex_waterGlasses", waterGlasses.toString());
@@ -140,14 +149,26 @@ export default function App() {
     setRepsInput("");
   };
 
-  // 🗑️ DELETE WORKOUT LOGIC (Bonus clean feature)
   const handleDeleteWorkout = (id) => {
     setWorkoutList(workoutList.filter((item) => item.id !== id));
   };
 
+  // WATER ACTIONS
   const addWaterGlass = () => setWaterGlasses((prev) => prev + 1);
   const removeWaterGlass = () =>
     setWaterGlasses((prev) => Math.max(0, prev - 1));
+
+  // 🥩 QUICK MACROS LOGGER LOGIC
+  const handleQuickLog = (cal, prot) => {
+    setCalorie((prev) => prev + cal);
+    setProtein((prev) => prev + prot);
+  };
+
+  // RESET DAILY INTAKE BUTTON (Bonus function for testing)
+  const handleResetIntake = () => {
+    setCalorie(0);
+    setProtein(0);
+  };
 
   const handleSaveName = () => {
     if (tempName.trim()) setProfileName(tempName);
@@ -242,9 +263,17 @@ export default function App() {
           {/* 🟢 DASHBOARD VIEW */}
           {activeTab == "dashboard" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
-              <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase mb-2">
-                WELCOME BACK, {profileName}!
-              </h1>
+              <div className="flex justify-between items-center mb-2">
+                <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase">
+                  WELCOME BACK, {profileName}!
+                </h1>
+                <button
+                  onClick={handleResetIntake}
+                  className="text-[10px] font-bold tracking-wider uppercase bg-white/40 border border-white/60 text-slate-700 px-3 py-1.5 rounded-xl hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-2xs active:scale-95"
+                >
+                  Reset Today's Macros
+                </button>
+              </div>
 
               <div className="flex gap-6 mt-6">
                 {/* Calories Card */}
@@ -311,7 +340,34 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex items-center mt-6">
+              {/* 🥩 QUICK LOGGER COMPONENT (New Glassmorphic Bar) */}
+              <div className="w-[712px] bg-white/20 border border-white/40 backdrop-blur-3xl rounded-2xl p-3.5 mt-4 flex items-center justify-between shadow-lg">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 pl-1">
+                  Quick Food Log:
+                </span>
+                <div className="flex gap-2.5">
+                  <button
+                    onClick={() => handleQuickLog(70, 6)}
+                    className="bg-white/60 border border-white hover:bg-white text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-2xs active:scale-95"
+                  >
+                    🥚 Whole Egg (+6g P)
+                  </button>
+                  <button
+                    onClick={() => handleQuickLog(165, 30)}
+                    className="bg-white/60 border border-white hover:bg-white text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-2xs active:scale-95"
+                  >
+                    🍗 Chicken Breast 100g (+30g P)
+                  </button>
+                  <button
+                    onClick={() => handleQuickLog(200, 25)}
+                    className="bg-white/60 border border-white hover:bg-white text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-2xs active:scale-95"
+                  >
+                    🥛 Protein Shake (+25g P)
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center mt-4">
                 <div className="h-80 w-178 pr-5 flex">
                   <div className="h-full w-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-6 flex flex-col costum-scrollbar">
                     <p className="text-sm font-bold tracking-wider text-slate-800 uppercase mb-4">
