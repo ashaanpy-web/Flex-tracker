@@ -18,15 +18,45 @@ export default function App() {
     (currentProtein / targetProtein) * 100,
     100,
   );
-
+  const getGLowClasses = () => {
+    if (activeTab == "dashboard") {
+      return {
+        glow1: "from-lime-400/40 to-emerald-400/20",
+        glow2: "from-sky-400/40 to-indigo-400/20",
+        glow3: "from-orange-300/30 to-red-400/30",
+      };
+    }
+    if (activeTab == "workout") {
+      return {
+        glow1: "from-red-500/40 to-orange-500/20",
+        glow2: "from-amber-500/30 to-yellow-400/20",
+        glow3: "from-rose-500/30 to-purple-600/20",
+      };
+    }
+    if (activeTab == "settings") {
+      return {
+        glow1: "from-purple-500/30 to-indigo-500/20",
+        glow2: "from-slate-400/30 to-zinc-500/20",
+        glow3: "from-cyan-500/20 to-blue-500/20",
+      };
+    }
+    return { glow1: "", glow2: "", glow3: "" };
+  };
+  const glows = getGLowClasses();
   return (
     <>
       <div className="bg-slate-200/80 min-h-screen relative pt-5 pb-5 pl-3 flex overflow-hidden costum-scrollbar">
         {/* Background Glows */}
         <div className="w-full h-full absolute top-0 left-0 z-0">
-          <div className="absolute top-[-20%] left-[-20%] w-150 h-150 rounded-full bg-linear-to-br from-lime-400/40 to-emerald-400/20 blur-3xl pointer-events-none z-0"></div>
-          <div className="absolute bottom-[-20%] right-[-10%] w-175 h-175 rounded-full bg-linear-to-tr from-sky-400/40 to-indigo-400/20 blur-3xl pointer-events-none z-0"></div>
-          <div className="bg-linear-to-br from-orange-300/30 to-red-400/30 h-150 w-150 rounded-full absolute bottom-[-5%] right-[-5%] z-0 blur-3xl pointer-events-none"></div>
+          <div
+            className={`absolute top-[-20%] left-[-20%] w-150 h-150 rounded-full bg-linear-to-br ${glows.glow1} blur-3xl pointer-events-none z-0 transition-all duration-700 ease-in-out`}
+          ></div>
+          <div
+            className={`absolute bottom-[-20%] right-[-10%] w-175 h-175 rounded-full bg-linear-to-tr ${glows.glow2} blur-3xl pointer-events-none z-0 transition-all duration-700 ease-in-out`}
+          ></div>
+          <div
+            className={`bg-linear-to-br ${glows.glow3} w-150 rounded-full absolute bottom-[-5%] right-[-5%] z-0 blur-3xl pointer-events-none transition-all duration-700 ease-in-out`}
+          ></div>
         </div>
 
         {/* Sidebar */}
