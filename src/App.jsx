@@ -14,10 +14,10 @@ export default function App() {
 
   // 💥 WATER INTAKE STATE
   const [waterGlasses, setWaterGlasses] = useState(3);
-  const targetWaterGlasses = 8; // Daily target 8 glasses
+  const targetWaterGlasses = 8;
 
-  // ⏱️ REST TIMER STATES (Nayi states rest timer ke liye)
-  const [timeLeft, setTimeLeft] = useState(60); // Default 60 seconds (1 minute) rest
+  // ⏱️ REST TIMER STATES
+  const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   // Settings temporary states
@@ -50,16 +50,15 @@ export default function App() {
     } else if (timeLeft === 0) {
       setIsTimerRunning(false);
     }
-    return () => clearInterval(interval); // Cleanup memory leak se bachne ke liye
+    return () => clearInterval(interval);
   }, [isTimerRunning, timeLeft]);
 
   const toggleTimer = () => setIsTimerRunning(!isTimerRunning);
   const resetTimer = () => {
     setIsTimerRunning(false);
-    setTimeLeft(60); // Reset back to 1 minute
+    setTimeLeft(60);
   };
 
-  // Plain number ko clock style rendering (MM:SS) dainay ka helper function
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -115,13 +114,9 @@ export default function App() {
   };
 
   // WATER ACTIONS
-  const addWaterGlass = () => {
-    setWaterGlasses((prev) => prev + 1);
-  };
-
-  const removeWaterGlass = () => {
+  const addWaterGlass = () => setWaterGlasses((prev) => prev + 1);
+  const removeWaterGlass = () =>
     setWaterGlasses((prev) => Math.max(0, prev - 1));
-  };
 
   // SAVE FUNCTIONS FOR SETTINGS
   const handleSaveName = () => {
@@ -141,7 +136,7 @@ export default function App() {
 
   return (
     <>
-      <div className="bg-slate-200/80 min-h-screen relative pt-5 pb-5 pl-3 flex overflow-hidden costum-scrollbar">
+      <div className="bg-slate-200/80 min-h-screen relative pt-5 pb-5 pl-3 flex overflow-hidden font-sans costum-scrollbar">
         {/* Background Glows */}
         <div className="w-full h-full absolute top-0 left-0 z-0">
           <div
@@ -157,14 +152,15 @@ export default function App() {
 
         {/* Sidebar */}
         <aside className="flex flex-col z-10 bg-white/5 border relative border-white/40 backdrop-blur-3xl w-60 h-[calc(100vh-40px)] rounded-3xl pr-2 pl-2 shadow-2xl no-scrollbar">
-          <div>
-            <div className="mt-5">
-              <div className="flex items-center gap-3 pl-2">
-                <div className="bg-black h-5 w-5 rounded-full animate-pulse duration-1000"></div>
-                <p className="text-black font-extrabold text-3xl">
-                  Flextracker
-                </p>
-              </div>
+          <div className="mt-6">
+            <div className="flex items-center gap-3 pl-3 mb-8">
+              <div className="bg-slate-900 h-4 w-4 rounded-full animate-pulse duration-1000"></div>
+              <p className="text-slate-900 font-extrabold text-2xl tracking-tight">
+                Flextracker
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
               <div
                 onClick={() => {
                   setActiveTab("dashboard");
@@ -172,36 +168,35 @@ export default function App() {
                   setTempCalorie(targetCalorie);
                   setTempProtein(targetProtein);
                 }}
-                className={`hover:bg-white text-black font-bold text-xl p-3 rounded-2xl border mt-5 flex items-center gap-3 cursor-pointer transition-all duration-300 ${
+                className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
                   activeTab === "dashboard"
-                    ? "bg-white border-white"
-                    : "bg-white/20 border-white/30"
+                    ? "bg-white border-white text-slate-900 shadow-xs"
+                    : "bg-white/10 border-white/20 text-slate-700 hover:bg-white/30"
                 }`}
               >
-                <i className="fa-solid fa-house"></i>
-                Dashboard
+                <i className="fa-solid fa-house text-xs"></i> Dashboard
               </div>
+
               <div
                 onClick={() => setActiveTab("workout")}
-                className={`text-black font-bold text-xl p-3 rounded-2xl border mt-5 flex items-center gap-3 cursor-pointer transition-all duration-300 ${
+                className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
                   activeTab === "workout"
-                    ? "bg-white border-white"
-                    : "bg-white/20 border-white/30"
+                    ? "bg-white border-white text-slate-900 shadow-xs"
+                    : "bg-white/10 border-white/20 text-slate-700 hover:bg-white/30"
                 }`}
               >
-                <i className="fa-solid fa-dumbbell"></i>
-                Workout log
+                <i className="fa-solid fa-dumbbell text-xs"></i> Workout log
               </div>
+
               <div
                 onClick={() => setActiveTab("settings")}
-                className={`text-black font-bold text-xl p-3 rounded-2xl border mt-5 flex items-center gap-3 cursor-pointer transition-all duration-300 ${
+                className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide ${
                   activeTab === "settings"
-                    ? "bg-white border-white"
-                    : "bg-white/20 border-white/30"
+                    ? "bg-white border-white text-slate-900 shadow-xs"
+                    : "bg-white/10 border-white/20 text-slate-700 hover:bg-white/30"
                 }`}
               >
-                <i className="fa-solid fa-gear"></i>
-                Settings
+                <i className="fa-solid fa-gear text-xs"></i> Settings
               </div>
             </div>
           </div>
@@ -212,87 +207,104 @@ export default function App() {
           {/* 🟢 DASHBOARD VIEW */}
           {activeTab == "dashboard" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
-              <h1 className="text-3xl font-extrabold tracking-tight uppercase">
+              <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase mb-2">
                 WELCOME BACK, {profileName}!
               </h1>
-              <div className="flex gap-10">
+
+              <div className="flex gap-6 mt-6">
                 {/* Calories Card */}
-                <div className="p-3 h-35 w-80 bg-white/5 rounded-3xl border border-white/40 shadow-2xl backdrop-blur-3xl mt-5">
+                <div className="p-5 h-36 w-80 bg-white/10 rounded-3xl border border-white/40 shadow-xl backdrop-blur-3xl flex flex-col justify-between">
                   <div className="flex items-center gap-2">
-                    <i className="fa-solid fa-fire text-orange-500"></i>
-                    <p className="text-xl font-bold">Todays Calories</p>
+                    <i className="fa-solid fa-fire text-orange-500 text-sm"></i>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                      Today's Calories
+                    </p>
                   </div>
-                  <p className="mt-3 text-xl font-semibold tracking-tight">
-                    {currentCalorie}/{targetCalorie} kcal
+                  <p className="text-xl font-bold tracking-tight text-slate-900">
+                    {currentCalorie}{" "}
+                    <span className="text-xs font-medium text-slate-500">
+                      / {targetCalorie} kcal
+                    </span>
                   </p>
-                  <div className="mt-3 w-70 h-3.5 bg-black/10 rounded-full overflow-hidden">
+                  <div className="w-full h-2.5 bg-black/5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-linear-to-r from-lime-500/50 to-emerald-600 transition-all duration-500 ease-out"
+                      className="h-full bg-linear-to-r from-orange-400 to-amber-500 transition-all duration-500 ease-out"
                       style={{ width: `${caloriePercentage}%` }}
                     ></div>
                   </div>
                 </div>
 
                 {/* Protein Card */}
-                <div className="p-3 h-35 w-80 bg-white/5 rounded-3xl border border-white/40 shadow-2xl backdrop-blur-3xl mt-5">
+                <div className="p-5 h-36 w-80 bg-white/10 rounded-3xl border border-white/40 shadow-xl backdrop-blur-3xl flex flex-col justify-between">
                   <div className="flex items-center gap-2">
-                    <i className="fa-solid fa-shrimp text-sky-500"></i>
-                    <p className="text-xl font-bold">Todays Protein</p>
+                    <i className="fa-solid fa-shrimp text-sky-500 text-sm"></i>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                      Today's Protein
+                    </p>
                   </div>
-                  <p className="mt-3 text-xl font-semibold tracking-tight">
-                    {currentProtein}g/{targetProtein}g
+                  <p className="text-xl font-bold tracking-tight text-slate-900">
+                    {currentProtein}g{" "}
+                    <span className="text-xs font-medium text-slate-500">
+                      / {targetProtein}g
+                    </span>
                   </p>
-                  <div className="mt-3 w-70 h-3.5 bg-black/10 rounded-full overflow-hidden">
+                  <div className="w-full h-2.5 bg-black/5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-linear-to-r from-blue-700/50 to-sky-800/45 transition-all duration-500 ease-out"
+                      className="h-full bg-linear-to-r from-sky-400 to-indigo-500 transition-all duration-500 ease-out"
                       style={{ width: `${proteinPercentage}%` }}
                     ></div>
                   </div>
                 </div>
 
                 {/* Weight Card */}
-                <div className="p-3 h-35 w-40 bg-white/5 rounded-3xl border border-white/40 shadow-2xl backdrop-blur-3xl mt-5">
+                <div className="p-5 h-36 w-40 bg-white/10 rounded-3xl border border-white/40 shadow-xl backdrop-blur-3xl flex flex-col justify-between">
                   <div>
-                    <p className="text-xl font-bold">Weight</p>
-                    <p className="text-xl font-semibold">65kg</p>
-                    <p className="text-blue-500/60 font-bold text-xs mt-3">
-                      Target: 70kg
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                      Weight
+                    </p>
+                    <p className="text-2xl font-black tracking-tight text-slate-900">
+                      65
+                      <span className="text-xs font-bold text-slate-500">
+                        {" "}
+                        kg
+                      </span>
                     </p>
                   </div>
+                  <p className="text-indigo-600 font-bold text-[10px] uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded-md w-max">
+                    Target: 70kg
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center">
-                <div className="h-80 w-178 pr-7 mt-5 flex">
-                  <div className="h-full w-full bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl p-5 flex flex-col costum-scrollbar">
-                    <p className="text-xl font-bold tracking-tight mb-2">
-                      Todays GOALS
+              <div className="flex items-center mt-6">
+                <div className="h-80 w-178 pr-5 flex">
+                  <div className="h-full w-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-6 flex flex-col costum-scrollbar">
+                    <p className="text-sm font-bold tracking-wider text-slate-800 uppercase mb-4">
+                      Today's GOALS
                     </p>
 
                     <div className="flex-1 overflow-y-auto pr-2 min-h-0 costum-scrollbar flex flex-col gap-3">
                       {workoutList.length === 0 ? (
-                        <p className="text-slate-500 text-sm italic p-3">
-                          Aaj ka koi goal nahi hai, workout log mein add karein!
+                        <p className="text-slate-500 text-xs font-medium italic p-4 text-center bg-white/5 rounded-2xl border border-white/10">
+                          NO logs for today ,Please add logs in workout tab
                         </p>
                       ) : (
                         workoutList.map((workout) => (
                           <div
                             key={workout.id}
-                            className="w-full h-20 bg-white/45 shadow-lg border border-white/20 rounded-2xl p-4 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300 shrink-0"
+                            className="w-full h-16 bg-white/40 shadow-xs border border-white/20 rounded-2xl px-4 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300 shrink-0"
                           >
                             <div>
-                              <p className="font-bold text-base text-black uppercase tracking-tight">
+                              <p className="font-bold text-sm text-slate-900 uppercase tracking-tight">
                                 {workout.name}
                               </p>
-                              <p className="text-xs text-slate-600 font-semibold mt-1">
+                              <p className="text-[11px] text-slate-600 font-medium mt-0.5">
                                 Target: {workout.weight}kg × {workout.reps} Reps
                               </p>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg">
-                                Active
-                              </span>
-                            </div>
+                            <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
+                              Active
+                            </span>
                           </div>
                         ))
                       )}
@@ -300,40 +312,39 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* CHOTA VALA DIV: WATER INTAKE TRACKER */}
-                <div className="h-80 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2 p-4 flex flex-col items-center justify-between">
-                  <div className="text-center w-full">
-                    <p className="text-lg font-bold tracking-tight text-black">
+                {/* WATER INTAKE TRACKER */}
+                <div className="h-80 w-40 bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-5 flex flex-col items-center justify-between text-center">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
                       Water Intake
                     </p>
                     <div className="mt-4 text-sky-500 animate-bounce duration-1000">
-                      <i className="fa-solid fa-droplet text-4xl"></i>
+                      <i className="fa-solid fa-droplet text-3xl"></i>
                     </div>
-                    <p className="mt-4 text-2xl font-extrabold text-slate-900">
+                    <p className="mt-4 text-2xl font-black text-slate-900 tracking-tight">
                       {waterGlasses}{" "}
-                      <span className="text-xs font-semibold text-slate-500">
+                      <span className="text-xs font-bold text-slate-400">
                         / {targetWaterGlasses}
                       </span>
                     </p>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-1">
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                       Glasses Drunk
                     </p>
-                    <p className="text-[11px] font-medium text-sky-600/80 mt-1">
-                      ~{(waterGlasses * 0.25).toFixed(2)} Liters
+                    <p className="text-[11px] font-semibold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-md mt-2 w-max mx-auto">
+                      ~{(waterGlasses * 0.25).toFixed(2)}L
                     </p>
                   </div>
 
-                  {/* Plus/Minus Interactive Buttons */}
-                  <div className="flex gap-3 w-full justify-center mb-2">
+                  <div className="flex gap-2.5 w-full justify-center">
                     <button
                       onClick={removeWaterGlass}
-                      className="w-10 h-10 rounded-xl bg-white/30 border border-white/50 text-slate-700 font-bold text-lg flex items-center justify-center hover:bg-white/60 transition-all shadow-xs active:scale-95"
+                      className="w-9 h-9 rounded-xl bg-white/40 border border-white/60 text-slate-700 font-bold hover:bg-white/70 transition-all shadow-2xs active:scale-95 text-sm"
                     >
                       -
                     </button>
                     <button
                       onClick={addWaterGlass}
-                      className="w-12 h-10 rounded-xl bg-sky-500/80 border border-sky-400 text-white font-bold text-lg flex items-center justify-center hover:bg-sky-500 transition-all shadow-md active:scale-95"
+                      className="w-12 h-9 rounded-xl bg-sky-500 border border-sky-400 text-white font-bold hover:bg-sky-600 transition-all shadow-md active:scale-95 text-sm"
                     >
                       +
                     </button>
@@ -346,71 +357,71 @@ export default function App() {
           {/* 🔵 WORKOUT VIEW */}
           {activeTab == "workout" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
-              <div>
-                <h1 className="text-black text-2xl tracking-tight font-extrabold">
-                  Your daily goals
-                </h1>
-              </div>
-              <div className="flex items-center">
-                <div className="h-100 w-178 pr-7 mt-5 flex">
-                  <div className="h-full w-full bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl p-5 flex flex-col custom-scrollbar">
-                    <p className="text-xl font-bold tracking-tight mb-2">
-                      Your workout logs
+              <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase">
+                Your Daily Routine
+              </h1>
+
+              <div className="flex items-center mt-6">
+                <div className="h-100 w-178 pr-5 flex">
+                  <div className="h-full w-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-6 flex flex-col custom-scrollbar">
+                    <p className="text-sm font-bold tracking-wider text-slate-800 uppercase mb-4">
+                      Your Workout Logs
                     </p>
-                    <div className="overflow-y-auto no-scrollbar">
-                      <div>
+
+                    <div className="flex-1 flex flex-col min-h-0">
+                      <div className="bg-white/20 p-4 rounded-2xl border border-white/20">
                         <input
                           type="text"
                           value={exerciseName}
                           onChange={(e) => setExerciseName(e.target.value)}
-                          className="bg-white/45 h-12 w-134 rounded-2xl p-3"
-                          placeholder="Add workout logs here"
+                          className="bg-white/60 h-10 w-full rounded-xl p-3 text-sm focus:outline-hidden font-medium placeholder:text-slate-400 border border-black/5 text-slate-900"
+                          placeholder="Exercise name (e.g., Bench Press)"
                         />
-                        <div className="flex gap-4 mt-5">
+                        <div className="flex gap-3 mt-3">
                           <input
                             type="text"
                             value={weightInput}
                             onChange={(e) => setWeightInput(e.target.value)}
-                            className="bg-white/45 h-12 w-30 rounded-2xl p-3"
-                            placeholder="Weight"
+                            className="bg-white/60 h-10 w-1/3 rounded-xl p-3 text-sm focus:outline-hidden font-medium border border-black/5 text-slate-900"
+                            placeholder="Weight (kg)"
                           />
                           <input
                             type="text"
                             value={repsInput}
                             onChange={(e) => setRepsInput(e.target.value)}
-                            className="bg-white/45 h-12 w-30 rounded-2xl p-3"
+                            className="bg-white/60 h-10 w-1/3 rounded-xl p-3 text-sm focus:outline-hidden font-medium border border-black/5 text-slate-900"
                             placeholder="Reps"
                           />
-                          <div
+                          <button
                             onClick={handleAddWorkout}
-                            className="flex items-center justify-center text-slate-600 h-12 w-30 rounded-2xl bg-white/45 cursor-pointer hover:bg-white/60 transition-all"
+                            className="w-1/3 h-10 text-xs font-bold tracking-wider uppercase bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all shadow-md active:scale-95"
                           >
-                            <p>Add..</p>
-                          </div>
+                            Add Log
+                          </button>
                         </div>
                       </div>
 
                       {/* DYNAMIC LIST */}
-                      <div className="overflow-y-auto mt-5 flex flex-col gap-4">
+                      <div className="overflow-y-auto mt-4 pr-1 flex flex-col gap-2 flex-1 costum-scrollbar">
                         {workoutList.length === 0 ? (
-                          <p className="text-slate-500 text-sm italic p-3">
-                            Koi workout add nahi kiya abhi tak...
+                          <p className="text-slate-500 text-xs font-medium italic p-4 text-center bg-white/5 rounded-2xl border border-white/10">
+                            No exercises logged for today yet.
                           </p>
                         ) : (
                           workoutList.map((workout) => (
                             <div
                               key={workout.id}
-                              className="h-20 w-134 bg-white/45 rounded-2xl p-4 flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2 duration-300"
+                              className="h-14 bg-white/40 rounded-xl px-4 flex items-center justify-between shadow-2xs border border-white/20 shrink-0"
                             >
                               <div>
-                                <p className="font-bold text-lg text-black uppercase tracking-tight">
+                                <p className="font-bold text-sm text-slate-900 uppercase tracking-tight">
                                   {workout.name}
                                 </p>
-                                <p className="text-sm text-slate-600 font-semibold">
+                                <p className="text-[11px] text-slate-500 font-semibold">
                                   {workout.weight}kg × {workout.reps} Reps
                                 </p>
                               </div>
-                              <i className="fa-solid fa-circle-check text-emerald-500 text-xl pr-2"></i>
+                              <i className="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
                             </div>
                           ))
                         )}
@@ -419,39 +430,37 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* ⏱️ LIVE REST TIMER CARD (Symmetry box populated) */}
-                <div className="h-100 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2 p-4 flex flex-col items-center justify-between">
-                  <div className="text-center w-full">
-                    <p className="text-lg font-bold tracking-tight text-black">
+                {/* REST TIMER CARD */}
+                <div className="h-100 w-40 bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-5 flex flex-col items-center justify-between text-center">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
                       Rest Time
                     </p>
-                    <div className="mt-6 text-rose-500">
+                    <div className="mt-5 text-rose-500">
                       <i
-                        className={`fa-solid fa-stopwatch text-4xl ${isTimerRunning ? "animate-pulse" : ""}`}
+                        className={`fa-solid fa-stopwatch text-3xl ${isTimerRunning ? "animate-pulse" : ""}`}
                       ></i>
                     </div>
-                    {/* Dynamic pulse effect jab count down 10 seconds se kam ho */}
                     <p
-                      className={`mt-6 text-3xl font-extrabold tracking-wider transition-all duration-300 ${timeLeft <= 10 ? "text-red-600 scale-105 animate-pulse" : "text-slate-900"}`}
+                      className={`mt-5 text-3xl font-black tracking-widest transition-all duration-300 ${timeLeft <= 10 ? "text-red-600 scale-105 animate-pulse" : "text-slate-900"}`}
                     >
                       {formatTime(timeLeft)}
                     </p>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-2">
+                    <p className="text-[9px] font-bold tracking-wider uppercase mt-1.5 text-slate-400">
                       {isTimerRunning ? "Resting..." : "Paused"}
                     </p>
                   </div>
 
-                  {/* Timer Controls */}
-                  <div className="flex flex-col gap-2 w-full mb-2 px-1">
+                  <div className="flex flex-col gap-2 w-full">
                     <button
                       onClick={toggleTimer}
-                      className={`w-full h-10 rounded-xl font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-95 text-white ${isTimerRunning ? "bg-amber-500 border border-amber-400 hover:bg-amber-600" : "bg-emerald-600 border border-emerald-500 hover:bg-emerald-700"}`}
+                      className={`w-full h-9 rounded-xl font-bold text-xs tracking-wider uppercase transition-all shadow-md active:scale-95 text-white ${isTimerRunning ? "bg-amber-500 hover:bg-amber-600" : "bg-emerald-600 hover:bg-emerald-700"}`}
                     >
                       {isTimerRunning ? "Pause" : "Start Rest"}
                     </button>
                     <button
                       onClick={resetTimer}
-                      className="w-full h-9 rounded-xl bg-white/30 border border-white/50 text-slate-700 font-semibold text-xs flex items-center justify-center hover:bg-white/50 active:scale-95 transition-all"
+                      className="w-full h-8 rounded-xl bg-white/40 border border-white/60 text-slate-700 font-bold text-[10px] tracking-wider uppercase hover:bg-white/50 active:scale-95 transition-all"
                     >
                       Reset (1m)
                     </button>
@@ -464,17 +473,17 @@ export default function App() {
           {/* ⚙️ SETTINGS VIEW */}
           {activeTab === "settings" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
-              <h1 className="text-3xl font-extrabold tracking-tight mb-5">
+              <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase mb-6">
                 SETTINGS
               </h1>
-              <div className="p-6 w-178 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl">
-                <p className="text-xl font-bold mb-4">
-                  Profile & Target Configurations
+              <div className="p-6 w-178 bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl">
+                <p className="text-sm font-bold uppercase tracking-wider text-slate-800 mb-4">
+                  Configurations
                 </p>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   {/* Name Edit */}
-                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between gap-4">
-                    <span className="font-semibold shrink-0">
+                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/15 flex items-center justify-between gap-4">
+                    <span className="text-sm font-bold text-slate-700">
                       Profile Name:
                     </span>
                     {editMode.name ? (
@@ -483,36 +492,36 @@ export default function App() {
                           type="text"
                           value={tempName}
                           onChange={(e) => setTempName(e.target.value)}
-                          className="bg-white/60 px-3 py-1 rounded-xl border border-black/10 focus:outline-hidden text-sm w-48 text-right"
+                          className="bg-white/70 px-3 py-1 rounded-xl border border-black/5 focus:outline-hidden text-sm w-48 text-right font-medium"
                         />
                         <button
                           onClick={handleSaveName}
-                          className="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-bold hover:bg-emerald-600"
+                          className="bg-emerald-600 text-white px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs"
                         >
                           Save
                         </button>
                       </div>
                     ) : (
-                      <>
-                        <span className="text-slate-700 font-medium italic">
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-slate-600 font-semibold italic">
                           {profileName}
                         </span>
                         <button
                           onClick={() =>
                             setEditMode({ ...editMode, name: true })
                           }
-                          className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60"
+                          className="bg-white/40 border border-white/60 px-3 py-1 rounded-xl text-xs font-bold text-slate-700 hover:bg-white/60"
                         >
                           Edit
                         </button>
-                      </>
+                      </div>
                     )}
                   </div>
 
                   {/* Calorie Edit */}
-                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between gap-4">
-                    <span className="font-semibold shrink-0">
-                      Daily Calorie Goal (kcal):
+                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/15 flex items-center justify-between gap-4">
+                    <span className="text-sm font-bold text-slate-700">
+                      Daily Calorie Goal:
                     </span>
                     {editMode.calorie ? (
                       <div className="flex items-center gap-2 w-full justify-end">
@@ -520,36 +529,36 @@ export default function App() {
                           type="number"
                           value={tempCalorie}
                           onChange={(e) => setTempCalorie(e.target.value)}
-                          className="bg-white/60 px-3 py-1 rounded-xl border border-black/10 focus:outline-hidden text-sm w-32 text-right"
+                          className="bg-white/70 px-3 py-1 rounded-xl border border-black/5 focus:outline-hidden text-sm w-32 text-right font-medium"
                         />
                         <button
                           onClick={handleSaveCalorie}
-                          className="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-bold hover:bg-emerald-600"
+                          className="bg-emerald-600 text-white px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs"
                         >
                           Save
                         </button>
                       </div>
                     ) : (
-                      <>
-                        <span className="text-slate-700 font-medium italic">
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-slate-600 font-semibold italic">
                           {targetCalorie} kcal
                         </span>
                         <button
                           onClick={() =>
                             setEditMode({ ...editMode, calorie: true })
                           }
-                          className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60"
+                          className="bg-white/40 border border-white/60 px-3 py-1 rounded-xl text-xs font-bold text-slate-700 hover:bg-white/60"
                         >
                           Edit
                         </button>
-                      </>
+                      </div>
                     )}
                   </div>
 
                   {/* Protein Edit */}
-                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between gap-4">
-                    <span className="font-semibold shrink-0">
-                      Daily Protein Goal (g):
+                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/15 flex items-center justify-between gap-4">
+                    <span className="text-sm font-bold text-slate-700">
+                      Daily Protein Goal:
                     </span>
                     {editMode.protein ? (
                       <div className="flex items-center gap-2 w-full justify-end">
@@ -557,29 +566,29 @@ export default function App() {
                           type="number"
                           value={tempProtein}
                           onChange={(e) => setTempProtein(e.target.value)}
-                          className="bg-white/60 px-3 py-1 rounded-xl border border-black/10 focus:outline-hidden text-sm w-32 text-right"
+                          className="bg-white/70 px-3 py-1 rounded-xl border border-black/5 focus:outline-hidden text-sm w-32 text-right font-medium"
                         />
                         <button
                           onClick={handleSaveProtein}
-                          className="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-bold hover:bg-emerald-600"
+                          className="bg-emerald-600 text-white px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs"
                         >
                           Save
                         </button>
                       </div>
                     ) : (
-                      <>
-                        <span className="text-slate-700 font-medium italic">
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-slate-600 font-semibold italic">
                           {targetProtein}g
                         </span>
                         <button
                           onClick={() =>
                             setEditMode({ ...editMode, protein: true })
                           }
-                          className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60"
+                          className="bg-white/40 border border-white/60 px-3 py-1 rounded-xl text-xs font-bold text-slate-700 hover:bg-white/60"
                         >
                           Edit
                         </button>
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>
