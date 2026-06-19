@@ -4,14 +4,12 @@ import "./index.css";
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // ✨ STATE DECLARED CORRECTLY WITH CONST AND NUMBERS
   const [currentCalorie, setCalorie] = useState(2000);
   const targetCalorie = 3000;
 
   const [currentProtein, setProtein] = useState(140); // Sirf number rakha hai taake math sahi chale
   const targetProtein = 150;
 
-  // ✨ MATHEMATICAL CALCULATION WITH CONST
   const caloriePercentage = Math.min(
     (currentCalorie / targetCalorie) * 100,
     100,
@@ -203,6 +201,32 @@ export default function App() {
                   </div>
                 </div>
                 <div className="h-80 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2"></div>
+              </div>
+            </div>
+          )}
+          {activeTab === "settings" && (
+            <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
+              <h1 className="text-3xl font-extrabold tracking-tight mb-5">
+                SETTINGS
+              </h1>
+              <div className="p-6 w-178 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl">
+                <p className="text-xl font-bold mb-4">
+                  Profile & Target Configurations
+                </p>
+                <div className="flex flex-col gap-4">
+                  <div className="w-full h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between">
+                    <span>Change Profile Name</span>
+                    <button className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60">
+                      Edit
+                    </button>
+                  </div>
+                  <div className="w-full h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between">
+                    <span>Adjust Daily Calorie Goals</span>
+                    <button className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60">
+                      Edit
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
