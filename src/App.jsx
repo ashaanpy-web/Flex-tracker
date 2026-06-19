@@ -43,6 +43,23 @@ export default function App() {
     return { glow1: "", glow2: "", glow3: "" };
   };
   const glows = getGLowClasses();
+  const [workoutList, setWorkoutList] = useState([]);
+  const [exercisName, setExerciseNmae] = useState("");
+  const [weightInput, setWeightInput] = useState("");
+  const [repsInput, setRepsInput] = useState("");
+  const handleAddWorkout = () => {
+    if (!exercisName.trim()) return;
+    const newWorkout = {
+      id: Date.now(),
+      name: exercisName || "0",
+      weight: weightInput || "0",
+      reps: repsInput || "0",
+    };
+    setWorkoutList([...workoutlist, newWorkout]);
+    setExerciseNmae = "";
+    setweightInput = "";
+    setRepsInput("");
+  };
   return (
     <>
       <div className="bg-slate-200/80 min-h-screen relative pt-5 pb-5 pl-3 flex overflow-hidden costum-scrollbar">
@@ -204,17 +221,23 @@ export default function App() {
                           type="text"
                           className="bg-white/45 h-12 w-134 rounded-2xl p-3"
                           placeholder="Add workout logs here"
+                          value={exercisName}
+                          onChange={(e) => setExerciseNmae(e.target.value)}
                         />
                         <div className="flex gap-4 mt-5">
                           <input
                             type="text"
                             className="bg-white/45 h-12 w-30 rounded-2xl p-3"
                             placeholder="Weight"
+                            value={weightInput}
+                            onChange={(e) => setWeightInput(e.target.value)}
                           />
                           <input
                             type="text"
                             className="bg-white/45 h-12 w-30 rounded-2xl p-3"
                             placeholder="Reps"
+                            value={repsInput}
+                            onChange={(e) => setRepsInput(e.target.vaue)}
                           />
                           <div className="flex items-center justify-center text-slate-600 h-12 w-30 rounded-2xl bg-white/45 cursor-pointer hover:bg-white/60 transition-all">
                             <p>Add..</p>
