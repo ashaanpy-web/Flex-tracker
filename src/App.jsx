@@ -4,11 +4,28 @@ import "./index.css";
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
+  // DYNAMIC PROFILE STATES
+  const [profileName, setProfileName] = useState("Ashaan");
   const [currentCalorie, setCalorie] = useState(2000);
-  const targetCalorie = 3000;
+  const [targetCalorie, setTargetCalorie] = useState(3000);
 
-  const [currentProtein, setProtein] = useState(140); // Sirf number rakha hai taake math sahi chale
-  const targetProtein = 150;
+  const [currentProtein, setProtein] = useState(140);
+  const [targetProtein, setTargetProtein] = useState(150);
+
+  // 💥 WATER INTAKE STATE (Naya state paani ke liye)
+  const [waterGlasses, setWaterGlasses] = useState(3);
+  const targetWaterGlasses = 8; // Daily target 8 glasses
+
+  // Settings temporary states
+  const [tempName, setTempName] = useState(profileName);
+  const [tempCalorie, setTempCalorie] = useState(targetCalorie);
+  const [tempProtein, setTempProtein] = useState(targetProtein);
+
+  const [editMode, setEditMode] = useState({
+    name: false,
+    calorie: false,
+    protein: false,
+  });
 
   const caloriePercentage = Math.min(
     (currentCalorie / targetCalorie) * 100,
@@ -18,6 +35,7 @@ export default function App() {
     (currentProtein / targetProtein) * 100,
     100,
   );
+
   const getGLowClasses = () => {
     if (activeTab == "dashboard") {
       return {
@@ -42,24 +60,55 @@ export default function App() {
     }
     return { glow1: "", glow2: "", glow3: "" };
   };
+
   const glows = getGLowClasses();
+
   const [workoutList, setWorkoutList] = useState([]);
-  const [exercisName, setExerciseNmae] = useState("");
+  const [exerciseName, setExerciseName] = useState("");
   const [weightInput, setWeightInput] = useState("");
   const [repsInput, setRepsInput] = useState("");
+
   const handleAddWorkout = () => {
-    if (!exercisName.trim()) return;
+    if (!exerciseName.trim()) return;
+
     const newWorkout = {
       id: Date.now(),
-      name: exercisName || "0",
+      name: exerciseName,
       weight: weightInput || "0",
       reps: repsInput || "0",
     };
-    setWorkoutList([...workoutlist, newWorkout]);
-    setExerciseNmae = "";
-    setweightInput = "";
+
+    setWorkoutList([...workoutList, newWorkout]);
+    setExerciseName("");
+    setWeightInput("");
     setRepsInput("");
   };
+
+  // WATER ACTIONS (Paani kam ya zyada karne ke functions)
+  const addWaterGlass = () => {
+    setWaterGlasses((prev) => prev + 1);
+  };
+
+  const removeWaterGlass = () => {
+    setWaterGlasses((prev) => Math.max(0, prev - 1)); // 0 se niche na jaye
+  };
+
+  // SAVE FUNCTIONS FOR SETTINGS
+  const handleSaveName = () => {
+    if (tempName.trim()) setProfileName(tempName);
+    setEditMode({ ...editMode, name: false });
+  };
+
+  const handleSaveCalorie = () => {
+    if (Number(tempCalorie) > 0) setTargetCalorie(Number(tempCalorie));
+    setEditMode({ ...editMode, calorie: false });
+  };
+
+  const handleSaveProtein = () => {
+    if (Number(tempProtein) > 0) setTargetProtein(Number(tempProtein));
+    setEditMode({ ...editMode, protein: false });
+  };
+
   return (
     <>
       <div className="bg-slate-200/80 min-h-screen relative pt-5 pb-5 pl-3 flex overflow-hidden costum-scrollbar">
@@ -79,15 +128,20 @@ export default function App() {
         {/* Sidebar */}
         <aside className="flex flex-col z-10 bg-white/5 border relative border-white/40 backdrop-blur-3xl w-60 h-[calc(100vh-40px)] rounded-3xl pr-2 pl-2 shadow-2xl no-scrollbar">
           <div>
-            <div>
-              <div className="flex items-center gap-3">
+            <div className="mt-5">
+              <div className="flex items-center gap-3 pl-2">
                 <div className="bg-black h-5 w-5 rounded-full animate-pulse duration-1000"></div>
                 <p className="text-black font-extrabold text-3xl">
                   Flextracker
                 </p>
               </div>
               <div
-                onClick={() => setActiveTab("dashboard")}
+                onClick={() => {
+                  setActiveTab("dashboard");
+                  setTempName(profileName);
+                  setTempCalorie(targetCalorie);
+                  setTempProtein(targetProtein);
+                }}
                 className={`hover:bg-white text-black font-bold text-xl p-3 rounded-2xl border mt-5 flex items-center gap-3 cursor-pointer transition-all duration-300 ${
                   activeTab === "dashboard"
                     ? "bg-white border-white"
@@ -128,8 +182,8 @@ export default function App() {
           {/* 🟢 DASHBOARD VIEW */}
           {activeTab == "dashboard" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
-              <h1 className="text-3xl font-extrabold tracking-tight">
-                WELCOME BACK, Ashaan!
+              <h1 className="text-3xl font-extrabold tracking-tight uppercase">
+                WELCOME BACK, {profileName}!
               </h1>
               <div className="flex gap-10">
                 {/* Calories Card */}
@@ -141,9 +195,7 @@ export default function App() {
                   <p className="mt-3 text-xl font-semibold tracking-tight">
                     {currentCalorie}/{targetCalorie} kcal
                   </p>
-                  {/* Outer Progress bar */}
                   <div className="mt-3 w-70 h-3.5 bg-black/10 rounded-full overflow-hidden">
-                    {/* Inner Dynamic math filling */}
                     <div
                       className="h-full bg-linear-to-r from-lime-500/50 to-emerald-600 transition-all duration-500 ease-out"
                       style={{ width: `${caloriePercentage}%` }}
@@ -160,9 +212,7 @@ export default function App() {
                   <p className="mt-3 text-xl font-semibold tracking-tight">
                     {currentProtein}g/{targetProtein}g
                   </p>
-                  {/* Outer Progress bar */}
                   <div className="mt-3 w-70 h-3.5 bg-black/10 rounded-full overflow-hidden">
-                    {/* Inner Dynamic math filling */}
                     <div
                       className="h-full bg-linear-to-r from-blue-700/50 to-sky-800/45 transition-all duration-500 ease-out"
                       style={{ width: `${proteinPercentage}%` }}
@@ -188,15 +238,77 @@ export default function App() {
                     <p className="text-xl font-bold tracking-tight mb-2">
                       Todays GOALS
                     </p>
-                    <div className="flex-1 overflow-y-auto pr-2 min-h-0 costum-scrollbar">
-                      <div className="w-full h-20 bg-white/45 shadow-2xl mt-3 border-white/4 rounded-2xl"></div>
-                      <div className="w-full h-20 bg-white/45 shadow-2xl mt-3 border-white/4 rounded-2xl"></div>
-                      <div className="w-full h-20 bg-white/45 shadow-2xl mt-3 border-white/4 rounded-2xl"></div>
-                      <div className="w-full h-20 bg-white/45 shadow-2xl mt-3 border-white/4 rounded-2xl"></div>
+
+                    <div className="flex-1 overflow-y-auto pr-2 min-h-0 costum-scrollbar flex flex-col gap-3">
+                      {workoutList.length === 0 ? (
+                        <p className="text-slate-500 text-sm italic p-3">
+                          Aaj ka koi goal nahi hai, workout log mein add karein!
+                        </p>
+                      ) : (
+                        workoutList.map((workout) => (
+                          <div
+                            key={workout.id}
+                            className="w-full h-20 bg-white/45 shadow-lg border border-white/20 rounded-2xl p-4 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300 shrink-0"
+                          >
+                            <div>
+                              <p className="font-bold text-base text-black uppercase tracking-tight">
+                                {workout.name}
+                              </p>
+                              <p className="text-xs text-slate-600 font-semibold mt-1">
+                                Target: {workout.weight}kg × {workout.reps} Reps
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-lg">
+                                Active
+                              </span>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
-                <div className="h-80 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2"></div>
+
+                {/* 💥 CHOTA VALA DIV: WATER INTAKE TRACKER */}
+                <div className="h-80 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2 p-4 flex flex-col items-center justify-between">
+                  <div className="text-center w-full">
+                    <p className="text-lg font-bold tracking-tight text-black">
+                      Water Intake
+                    </p>
+                    <div className="mt-4 text-sky-500 animate-bounce duration-1000">
+                      <i className="fa-solid fa-droplet text-4xl"></i>
+                    </div>
+                    <p className="mt-4 text-2xl font-extrabold text-slate-900">
+                      {waterGlasses}{" "}
+                      <span className="text-xs font-semibold text-slate-500">
+                        / {targetWaterGlasses}
+                      </span>
+                    </p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-1">
+                      Glasses Drunk
+                    </p>
+                    <p className="text-[11px] font-medium text-sky-600/80 mt-1">
+                      ~{(waterGlasses * 0.25).toFixed(2)} Liters
+                    </p>
+                  </div>
+
+                  {/* Plus/Minus Interactive Buttons */}
+                  <div className="flex gap-3 w-full justify-center mb-2">
+                    <button
+                      onClick={removeWaterGlass}
+                      className="w-10 h-10 rounded-xl bg-white/30 border border-white/50 text-slate-700 font-bold text-lg flex items-center justify-center hover:bg-white/60 transition-all shadow-xs active:scale-95"
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={addWaterGlass}
+                      className="w-12 h-10 rounded-xl bg-sky-500/80 border border-sky-400 text-white font-bold text-lg flex items-center justify-center hover:bg-sky-500 transition-all shadow-md active:scale-95"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -211,7 +323,7 @@ export default function App() {
               </div>
               <div className="flex items-center">
                 <div className="h-100 w-178 pr-7 mt-5 flex">
-                  <div className="h-full w-full bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl p-5 flex flex-col costum-scrollbar">
+                  <div className="h-full w-full bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl p-5 flex flex-col custom-scrollbar">
                     <p className="text-xl font-bold tracking-tight mb-2">
                       Your workout logs
                     </p>
@@ -219,44 +331,70 @@ export default function App() {
                       <div>
                         <input
                           type="text"
+                          value={exerciseName}
+                          onChange={(e) => setExerciseName(e.target.value)}
                           className="bg-white/45 h-12 w-134 rounded-2xl p-3"
                           placeholder="Add workout logs here"
-                          value={exercisName}
-                          onChange={(e) => setExerciseNmae(e.target.value)}
                         />
                         <div className="flex gap-4 mt-5">
                           <input
                             type="text"
-                            className="bg-white/45 h-12 w-30 rounded-2xl p-3"
-                            placeholder="Weight"
                             value={weightInput}
                             onChange={(e) => setWeightInput(e.target.value)}
+                            className="bg-white/45 h-12 w-30 rounded-2xl p-3"
+                            placeholder="Weight"
                           />
                           <input
                             type="text"
+                            value={repsInput}
+                            onChange={(e) => setRepsInput(e.target.value)}
                             className="bg-white/45 h-12 w-30 rounded-2xl p-3"
                             placeholder="Reps"
-                            value={repsInput}
-                            onChange={(e) => setRepsInput(e.target.vaue)}
                           />
-                          <div className="flex items-center justify-center text-slate-600 h-12 w-30 rounded-2xl bg-white/45 cursor-pointer hover:bg-white/60 transition-all">
+                          <div
+                            onClick={handleAddWorkout}
+                            className="flex items-center justify-center text-slate-600 h-12 w-30 rounded-2xl bg-white/45 cursor-pointer hover:bg-white/60 transition-all"
+                          >
                             <p>Add..</p>
                           </div>
                         </div>
                       </div>
-                      <div className="overflow-y-auto">
-                        <div className="h-20 w-134 bg-white/45 rounded-2xl mt-5"></div>
-                        <div className="h-20 w-134 bg-white/45 rounded-2xl mt-5"></div>
-                        <div className="h-20 w-134 bg-white/45 rounded-2xl mt-5"></div>
-                        <div className="h-20 w-134 bg-white/45 rounded-2xl mt-5"></div>
+
+                      {/* DYNAMIC LIST */}
+                      <div className="overflow-y-auto mt-5 flex flex-col gap-4">
+                        {workoutList.length === 0 ? (
+                          <p className="text-slate-500 text-sm italic p-3">
+                            Koi workout add nahi kiya abhi tak...
+                          </p>
+                        ) : (
+                          workoutList.map((workout) => (
+                            <div
+                              key={workout.id}
+                              className="h-20 w-134 bg-white/45 rounded-2xl p-4 flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2 duration-300"
+                            >
+                              <div>
+                                <p className="font-bold text-lg text-black uppercase tracking-tight">
+                                  {workout.name}
+                                </p>
+                                <p className="text-sm text-slate-600 font-semibold">
+                                  {workout.weight}kg × {workout.reps} Reps
+                                </p>
+                              </div>
+                              <i className="fa-solid fa-circle-check text-emerald-500 text-xl pr-2"></i>
+                            </div>
+                          ))
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="h-80 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2"></div>
+                {/* Workout view mein bhi right card ko symmetry ke liye khali chorein ya same tracker render kar sakte hain */}
+                <div className="h-100 w-40 bg-white/5 border border-white/40 backdrop-blur-3xl shadow-2xl rounded-3xl mt-5 ml-2"></div>
               </div>
             </div>
           )}
+
+          {/* ⚙️ SETTINGS VIEW */}
           {activeTab === "settings" && (
             <div className="animate-in fade-in duration-300 slide-in-from-bottom-2">
               <h1 className="text-3xl font-extrabold tracking-tight mb-5">
@@ -267,17 +405,115 @@ export default function App() {
                   Profile & Target Configurations
                 </p>
                 <div className="flex flex-col gap-4">
-                  <div className="w-full h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between">
-                    <span>Change Profile Name</span>
-                    <button className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60">
-                      Edit
-                    </button>
+                  {/* Name Edit */}
+                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between gap-4">
+                    <span className="font-semibold shrink-0">
+                      Profile Name:
+                    </span>
+                    {editMode.name ? (
+                      <div className="flex items-center gap-2 w-full justify-end">
+                        <input
+                          type="text"
+                          value={tempName}
+                          onChange={(e) => setTempName(e.target.value)}
+                          className="bg-white/60 px-3 py-1 rounded-xl border border-black/10 focus:outline-hidden text-sm w-48 text-right"
+                        />
+                        <button
+                          onClick={handleSaveName}
+                          className="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-bold hover:bg-emerald-600"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-slate-700 font-medium italic">
+                          {profileName}
+                        </span>
+                        <button
+                          onClick={() =>
+                            setEditMode({ ...editMode, name: true })
+                          }
+                          className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60"
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
                   </div>
-                  <div className="w-full h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between">
-                    <span>Adjust Daily Calorie Goals</span>
-                    <button className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60">
-                      Edit
-                    </button>
+
+                  {/* Calorie Edit */}
+                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between gap-4">
+                    <span className="font-semibold shrink-0">
+                      Daily Calorie Goal (kcal):
+                    </span>
+                    {editMode.calorie ? (
+                      <div className="flex items-center gap-2 w-full justify-end">
+                        <input
+                          type="number"
+                          value={tempCalorie}
+                          onChange={(e) => setTempCalorie(e.target.value)}
+                          className="bg-white/60 px-3 py-1 rounded-xl border border-black/10 focus:outline-hidden text-sm w-32 text-right"
+                        />
+                        <button
+                          onClick={handleSaveCalorie}
+                          className="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-bold hover:bg-emerald-600"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-slate-700 font-medium italic">
+                          {targetCalorie} kcal
+                        </span>
+                        <button
+                          onClick={() =>
+                            setEditMode({ ...editMode, calorie: true })
+                          }
+                          className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60"
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Protein Edit */}
+                  <div className="w-full min-h-14 bg-white/20 rounded-2xl p-4 border border-white/20 flex items-center justify-between gap-4">
+                    <span className="font-semibold shrink-0">
+                      Daily Protein Goal (g):
+                    </span>
+                    {editMode.protein ? (
+                      <div className="flex items-center gap-2 w-full justify-end">
+                        <input
+                          type="number"
+                          value={tempProtein}
+                          onChange={(e) => setTempProtein(e.target.value)}
+                          className="bg-white/60 px-3 py-1 rounded-xl border border-black/10 focus:outline-hidden text-sm w-32 text-right"
+                        />
+                        <button
+                          onClick={handleSaveProtein}
+                          className="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-bold hover:bg-emerald-600"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-slate-700 font-medium italic">
+                          {targetProtein}g
+                        </span>
+                        <button
+                          onClick={() =>
+                            setEditMode({ ...editMode, protein: true })
+                          }
+                          className="bg-white/45 px-4 py-1 rounded-xl text-sm font-semibold hover:bg-white/60"
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
