@@ -7,7 +7,7 @@ export default function App() {
 
   // 💾 LOCAL STORAGE SE INITIAL DATA LOAD KARNA
   const [profileName, setProfileName] = useState(() => {
-    return localStorage.getItem("flex_profileName") || "Ashaan";
+    return localStorage.getItem("flex_profileName") || "User";
   });
 
   const [currentCalorie, setCalorie] = useState(() => {
@@ -377,7 +377,7 @@ export default function App() {
                     <div className="flex-1 overflow-y-auto pr-2 min-h-0 costum-scrollbar flex flex-col gap-3">
                       {workoutList.length === 0 ? (
                         <p className="text-slate-500 text-xs font-medium italic p-4 text-center bg-white/5 rounded-2xl border border-white/10">
-                          Aaj ka koi goal nahi hai, workout log mein add karein!
+                          No logs added ,Please add a log in workout tab
                         </p>
                       ) : (
                         workoutList.map((workout) => (
