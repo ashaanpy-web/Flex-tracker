@@ -1,0 +1,133 @@
+export default function Sidebar({
+  activeTab,
+  setActiveTab,
+  onOpenSettings,
+  mobileOpen,
+  setMobileOpen,
+}) {
+  const navItems = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: "fa-solid fa-house",
+    },
+    {
+      id: "workout",
+      label: "Workout log",
+      icon: "fa-solid fa-dumbbell",
+    },
+    {
+      id: "logger",
+      label: "Macro Logger",
+      icon: "fa-solid fa-utensils",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: "fa-solid fa-gear",
+    },
+  ];
+
+  const handleTabClick = (id) => {
+    if (id === "settings" && onOpenSettings) {
+      onOpenSettings();
+    } else {
+      setActiveTab(id);
+    }
+    if (setMobileOpen) {
+      setMobileOpen(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex flex-col z-20 bg-white/10 border border-white/40 backdrop-blur-3xl w-64 shrink-0 h-[calc(100vh-2.5rem)] rounded-3xl p-3 shadow-2xl no-scrollbar sticky top-5">
+        <div className="mt-4 px-2">
+          <div className="flex items-center gap-3 pl-2 mb-8">
+            <div className="bg-slate-900 h-4 w-4 rounded-full animate-pulse duration-1000 shrink-0"></div>
+            <p className="text-slate-900 font-extrabold text-2xl tracking-tight">
+              Flextracker
+            </p>
+          </div>
+
+          <nav className="flex flex-col gap-2">
+            {navItems.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabClick(item.id)}
+                  className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide text-left ${
+                    isActive
+                      ? "bg-white border-white text-slate-900 shadow-xs"
+                      : "bg-white/10 border-white/20 text-slate-700 hover:bg-white/30"
+                  }`}
+                >
+                  <i className={`${item.icon} text-xs w-4 text-center`}></i>
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
+
+      {/* Mobile Backdrop & Drawer */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <div
+        className={`fixed top-0 left-0 bottom-0 z-50 w-72 bg-white/80 backdrop-blur-2xl border-r border-white/50 p-5 shadow-2xl transition-transform duration-300 ease-in-out lg:hidden flex flex-col justify-between ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div>
+          <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200/50">
+            <div className="flex items-center gap-3">
+              <div className="bg-slate-900 h-4 w-4 rounded-full animate-pulse"></div>
+              <span className="text-slate-900 font-extrabold text-xl tracking-tight">
+                Flextracker
+              </span>
+            </div>
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="p-2 text-slate-500 hover:text-slate-800 transition-colors"
+              aria-label="Close menu"
+            >
+              <i className="fa-solid fa-xmark text-lg"></i>
+            </button>
+          </div>
+
+          <nav className="flex flex-col gap-2">
+            {navItems.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabClick(item.id)}
+                  className={`text-sm font-semibold p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all duration-300 tracking-wide text-left ${
+                    isActive
+                      ? "bg-slate-900 border-slate-900 text-white shadow-md"
+                      : "bg-white/40 border-white/60 text-slate-700 hover:bg-white/60"
+                  }`}
+                >
+                  <i className={`${item.icon} text-sm w-5 text-center`}></i>
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="text-xs text-slate-400 font-medium text-center py-2">
+          Flex Tracker &copy; {new Date().getFullYear()}
+        </div>
+      </div>
+    </>
+  );
+}
