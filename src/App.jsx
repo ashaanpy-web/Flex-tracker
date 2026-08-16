@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "./index.css";
 import BackgroundGlows from "./components/BackgroundGlows";
 import Sidebar from "./components/Sidebar";
@@ -188,8 +189,14 @@ export default function App() {
     setTempProtein(targetProtein);
   };
 
+  const pageVariants = {
+    initial: { opacity: 0, y: 15, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -15, scale: 0.98 },
+  };
+
   return (
-    <div className="bg-slate-200/80 min-h-screen relative p-3 sm:p-5 flex flex-col lg:flex-row gap-4 font-sans no-scrollbar">
+    <div className="bg-[#0f172a] min-h-screen relative p-3 sm:p-5 flex flex-col lg:flex-row gap-4 font-sans no-scrollbar">
       {/* Dynamic Background Glows */}
       <BackgroundGlows activeTab={activeTab} />
 
@@ -212,75 +219,113 @@ export default function App() {
         />
 
         <main className="flex-1 p-2 sm:p-4 lg:p-6 overflow-x-hidden no-scrollbar">
-          {activeTab === "dashboard" && (
-            <DashboardView
-              profileName={profileName}
-              currentCalorie={currentCalorie}
-              targetCalorie={targetCalorie}
-              currentProtein={currentProtein}
-              targetProtein={targetProtein}
-              caloriePercentage={caloriePercentage}
-              proteinPercentage={proteinPercentage}
-              workoutList={workoutList}
-              waterGlasses={waterGlasses}
-              targetWaterGlasses={targetWaterGlasses}
-              addWaterGlass={addWaterGlass}
-              removeWaterGlass={removeWaterGlass}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            {activeTab === "dashboard" && (
+              <motion.div
+                key="dashboard"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <DashboardView
+                  profileName={profileName}
+                  currentCalorie={currentCalorie}
+                  targetCalorie={targetCalorie}
+                  currentProtein={currentProtein}
+                  targetProtein={targetProtein}
+                  caloriePercentage={caloriePercentage}
+                  proteinPercentage={proteinPercentage}
+                  workoutList={workoutList}
+                  waterGlasses={waterGlasses}
+                  targetWaterGlasses={targetWaterGlasses}
+                  addWaterGlass={addWaterGlass}
+                  removeWaterGlass={removeWaterGlass}
+                />
+              </motion.div>
+            )}
 
-          {activeTab === "workout" && (
-            <WorkoutView
-              exerciseName={exerciseName}
-              setExerciseName={setExerciseName}
-              weightInput={weightInput}
-              setWeightInput={setWeightInput}
-              repsInput={repsInput}
-              setRepsInput={setRepsInput}
-              handleAddWorkout={handleAddWorkout}
-              workoutList={workoutList}
-              handleDeleteWorkout={handleDeleteWorkout}
-              timeLeft={timeLeft}
-              setTimeLeft={setTimeLeft}
-              isTimerRunning={isTimerRunning}
-              setIsTimerRunning={setIsTimerRunning}
-            />
-          )}
+            {activeTab === "workout" && (
+              <motion.div
+                key="workout"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <WorkoutView
+                  exerciseName={exerciseName}
+                  setExerciseName={setExerciseName}
+                  weightInput={weightInput}
+                  setWeightInput={setWeightInput}
+                  repsInput={repsInput}
+                  setRepsInput={setRepsInput}
+                  handleAddWorkout={handleAddWorkout}
+                  workoutList={workoutList}
+                  handleDeleteWorkout={handleDeleteWorkout}
+                  timeLeft={timeLeft}
+                  setTimeLeft={setTimeLeft}
+                  isTimerRunning={isTimerRunning}
+                  setIsTimerRunning={setIsTimerRunning}
+                />
+              </motion.div>
+            )}
 
-          {activeTab === "logger" && (
-            <MacroLoggerView
-              currentCalorie={currentCalorie}
-              targetCalorie={targetCalorie}
-              currentProtein={currentProtein}
-              targetProtein={targetProtein}
-              manualCal={manualCal}
-              setManualCal={setManualCal}
-              manualProt={manualProt}
-              setManualProt={setManualProt}
-              handleQuickLog={handleQuickLog}
-              handleManualLog={handleManualLog}
-              handleResetIntake={handleResetIntake}
-            />
-          )}
+            {activeTab === "logger" && (
+              <motion.div
+                key="logger"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <MacroLoggerView
+                  currentCalorie={currentCalorie}
+                  targetCalorie={targetCalorie}
+                  currentProtein={currentProtein}
+                  targetProtein={targetProtein}
+                  manualCal={manualCal}
+                  setManualCal={setManualCal}
+                  manualProt={manualProt}
+                  setManualProt={setManualProt}
+                  handleQuickLog={handleQuickLog}
+                  handleManualLog={handleManualLog}
+                  handleResetIntake={handleResetIntake}
+                />
+              </motion.div>
+            )}
 
-          {activeTab === "settings" && (
-            <SettingsView
-              profileName={profileName}
-              targetCalorie={targetCalorie}
-              targetProtein={targetProtein}
-              editMode={editMode}
-              setEditMode={setEditMode}
-              tempName={tempName}
-              setTempName={setTempName}
-              tempCalorie={tempCalorie}
-              setTempCalorie={setTempCalorie}
-              tempProtein={tempProtein}
-              setTempProtein={setTempProtein}
-              handleSaveName={handleSaveName}
-              handleSaveCalorie={handleSaveCalorie}
-              handleSaveProtein={handleSaveProtein}
-            />
-          )}
+            {activeTab === "settings" && (
+              <motion.div
+                key="settings"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <SettingsView
+                  profileName={profileName}
+                  targetCalorie={targetCalorie}
+                  targetProtein={targetProtein}
+                  editMode={editMode}
+                  setEditMode={setEditMode}
+                  tempName={tempName}
+                  setTempName={setTempName}
+                  tempCalorie={tempCalorie}
+                  setTempCalorie={setTempCalorie}
+                  tempProtein={tempProtein}
+                  setTempProtein={setTempProtein}
+                  handleSaveName={handleSaveName}
+                  handleSaveCalorie={handleSaveCalorie}
+                  handleSaveProtein={handleSaveProtein}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </main>
       </div>
     </div>

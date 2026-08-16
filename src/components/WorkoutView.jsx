@@ -1,9 +1,13 @@
+import { useLiquidGlass } from "../hooks/useLiquidGlass";
+
 export function RestTimer({
   timeLeft,
   setTimeLeft,
   isTimerRunning,
   setIsTimerRunning,
 }) {
+  const glassRef = useLiquidGlass({ scale: -100, blur: 14 });
+
   const toggleTimer = () => setIsTimerRunning((prev) => !prev);
   const resetTimer = () => {
     setIsTimerRunning(false);
@@ -17,14 +21,17 @@ export function RestTimer({
   };
 
   return (
-    <div className="h-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-5 flex flex-col items-center justify-between text-center min-h-[340px]">
+    <div
+      ref={glassRef}
+      className="liquid-glass h-full border border-white/50 shadow-xl rounded-3xl p-5 flex flex-col items-center justify-between text-center min-h-[340px]"
+    >
       <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
+        <p className="text-xs font-black uppercase tracking-wider text-slate-800">
           Rest Time
         </p>
         <div className="mt-5 text-rose-500">
           <i
-            className={`fa-solid fa-stopwatch text-3xl ${
+            className={`fa-solid fa-stopwatch text-3xl drop-shadow-md ${
               isTimerRunning ? "animate-pulse" : ""
             }`}
           ></i>
@@ -33,12 +40,12 @@ export function RestTimer({
           className={`mt-5 text-3xl font-black tracking-widest transition-all duration-300 ${
             timeLeft <= 10
               ? "text-red-600 scale-105 animate-pulse"
-              : "text-slate-900"
+              : "text-slate-950"
           }`}
         >
           {formatTime(timeLeft)}
         </p>
-        <p className="text-[9px] font-bold tracking-wider uppercase mt-1.5 text-slate-400">
+        <p className="text-[9px] font-extrabold tracking-wider uppercase mt-1.5 text-slate-600">
           {isTimerRunning ? "Resting..." : "Paused"}
         </p>
       </div>
@@ -46,7 +53,7 @@ export function RestTimer({
       <div className="flex flex-col gap-2 w-full mt-4">
         <button
           onClick={toggleTimer}
-          className={`w-full py-2.5 rounded-xl font-bold text-xs tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer text-white ${
+          className={`w-full py-2.5 rounded-xl font-extrabold text-xs tracking-wider uppercase transition-all shadow-md active:scale-95 cursor-pointer text-white ${
             isTimerRunning
               ? "bg-amber-500 hover:bg-amber-600"
               : "bg-emerald-600 hover:bg-emerald-700"
@@ -56,7 +63,7 @@ export function RestTimer({
         </button>
         <button
           onClick={resetTimer}
-          className="w-full py-2 rounded-xl bg-white/40 border border-white/60 text-slate-700 font-bold text-[10px] tracking-wider uppercase hover:bg-white/50 active:scale-95 transition-all cursor-pointer"
+          className="w-full py-2 rounded-xl bg-white/50 border border-white/70 text-slate-800 font-bold text-[10px] tracking-wider uppercase hover:bg-white/70 active:scale-95 transition-all cursor-pointer shadow-2xs"
         >
           Reset (1m)
         </button>
@@ -76,19 +83,24 @@ export function WorkoutFormList({
   workoutList,
   handleDeleteWorkout,
 }) {
+  const glassRef = useLiquidGlass({ scale: -110, blur: 16 });
+
   return (
-    <div className="h-full bg-white/10 border border-white/40 backdrop-blur-3xl shadow-xl rounded-3xl p-5 sm:p-6 flex flex-col custom-scrollbar">
-      <p className="text-sm font-bold tracking-wider text-slate-800 uppercase mb-4">
+    <div
+      ref={glassRef}
+      className="liquid-glass h-full border border-white/50 shadow-xl rounded-3xl p-5 sm:p-6 flex flex-col custom-scrollbar"
+    >
+      <p className="text-sm font-black tracking-wider text-slate-900 uppercase mb-4">
         Your Workout Logs
       </p>
 
       <div className="flex-1 flex flex-col min-h-0">
-        <div className="bg-white/20 p-4 rounded-2xl border border-white/20">
+        <div className="liquid-glass-card p-4 rounded-2xl border border-white/40 mb-4">
           <input
             type="text"
             value={exerciseName}
             onChange={(e) => setExerciseName(e.target.value)}
-            className="bg-white/60 h-10 w-full rounded-xl p-3 text-sm focus:outline-hidden font-medium placeholder:text-slate-400 border border-black/5 text-slate-900"
+            className="liquid-glass-input h-10 w-full p-3 text-sm focus:outline-hidden font-bold placeholder:text-slate-500 text-slate-950"
             placeholder="Exercise name (e.g., Bench Press)"
           />
           <div className="flex flex-col sm:flex-row gap-3 mt-3">
@@ -96,19 +108,19 @@ export function WorkoutFormList({
               type="text"
               value={weightInput}
               onChange={(e) => setWeightInput(e.target.value)}
-              className="bg-white/60 h-10 sm:w-1/3 rounded-xl p-3 text-sm focus:outline-hidden font-medium border border-black/5 text-slate-900"
+              className="liquid-glass-input h-10 sm:w-1/3 p-3 text-sm focus:outline-hidden font-bold text-slate-950 placeholder:text-slate-500"
               placeholder="Weight (kg)"
             />
             <input
               type="text"
               value={repsInput}
               onChange={(e) => setRepsInput(e.target.value)}
-              className="bg-white/60 h-10 sm:w-1/3 rounded-xl p-3 text-sm focus:outline-hidden font-medium border border-black/5 text-slate-900"
+              className="liquid-glass-input h-10 sm:w-1/3 p-3 text-sm focus:outline-hidden font-bold text-slate-950 placeholder:text-slate-500"
               placeholder="Reps"
             />
             <button
               onClick={handleAddWorkout}
-              className="sm:w-1/3 h-10 text-xs font-bold tracking-wider uppercase bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="sm:w-1/3 h-10 text-xs font-black tracking-wider uppercase bg-slate-950 text-white rounded-xl hover:bg-slate-800 transition-all shadow-md active:scale-95 cursor-pointer"
             >
               Add Log
             </button>
@@ -116,28 +128,28 @@ export function WorkoutFormList({
         </div>
 
         {/* DYNAMIC LIST WITH DELETE OPTION */}
-        <div className="overflow-y-auto mt-4 pr-1 flex flex-col gap-2 flex-1 custom-scrollbar min-h-[160px]">
+        <div className="overflow-y-auto pr-1 flex flex-col gap-2 flex-1 custom-scrollbar min-h-[160px]">
           {workoutList.length === 0 ? (
-            <p className="text-slate-500 text-xs font-medium italic p-4 text-center bg-white/5 rounded-2xl border border-white/10">
+            <p className="text-slate-600 text-xs font-semibold italic p-4 text-center bg-white/20 rounded-2xl border border-white/30">
               No exercises logged for today yet.
             </p>
           ) : (
             workoutList.map((workout) => (
               <div
                 key={workout.id}
-                className="min-h-14 bg-white/40 rounded-xl px-4 py-2 flex items-center justify-between shadow-2xs border border-white/20 shrink-0"
+                className="min-h-14 bg-white/50 rounded-xl px-4 py-2 flex items-center justify-between shadow-2xs border border-white/40 shrink-0 hover:bg-white/60 transition-all"
               >
                 <div className="pr-2">
-                  <p className="font-bold text-sm text-slate-900 uppercase tracking-tight break-words">
+                  <p className="font-extrabold text-sm text-slate-950 uppercase tracking-tight break-words">
                     {workout.name}
                   </p>
-                  <p className="text-[11px] text-slate-500 font-semibold">
+                  <p className="text-[11px] text-slate-700 font-bold">
                     {workout.weight}kg × {workout.reps} Reps
                   </p>
                 </div>
                 <button
                   onClick={() => handleDeleteWorkout(workout.id)}
-                  className="text-slate-400 hover:text-red-500 transition-colors p-2 cursor-pointer shrink-0"
+                  className="text-slate-500 hover:text-red-600 transition-colors p-2 cursor-pointer shrink-0"
                   aria-label="Delete workout"
                 >
                   <i className="fa-solid fa-trash-can text-sm"></i>
@@ -167,8 +179,8 @@ export default function WorkoutView({
   setIsTimerRunning,
 }) {
   return (
-    <div className="animate-in fade-in duration-300 slide-in-from-bottom-2 flex flex-col gap-6">
-      <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase">
+    <div className="flex flex-col gap-6">
+      <h1 className="text-2xl font-black tracking-wider text-slate-900 uppercase drop-shadow-xs">
         Your Daily Routine
       </h1>
 
