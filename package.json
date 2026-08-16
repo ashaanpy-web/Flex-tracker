@@ -24,6 +24,10 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+<<<<<<< HEAD
+=======
+    "playwright": "^1.62.1",
+>>>>>>> 64c7ec0 (added new theme)
     "vite": "^8.0.12"
   }
 }

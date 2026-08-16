@@ -1,11 +1,27 @@
 import { useState, useEffect } from "react";
 import "./index.css";
+<<<<<<< HEAD
+=======
+import BackgroundGlows from "./components/BackgroundGlows";
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import DashboardView from "./components/DashboardView";
+import WorkoutView from "./components/WorkoutView";
+import MacroLoggerView from "./components/MacroLoggerView";
+import SettingsView from "./components/SettingsView";
+>>>>>>> 64c7ec0 (added new theme)
 
 export default function App() {
   // AVAILABLE TABS: "dashboard", "workout", "logger", "settings"
   const [activeTab, setActiveTab] = useState("dashboard");
+<<<<<<< HEAD
 
   // 💾 LOCAL STORAGE SE INITIAL DATA LOAD KARNA
+=======
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // LOCAL STORAGE INITIAL DATA LOAD
+>>>>>>> 64c7ec0 (added new theme)
   const [profileName, setProfileName] = useState(() => {
     return localStorage.getItem("flex_profileName") || "User";
   });
@@ -38,7 +54,11 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
+<<<<<<< HEAD
   // Manual custom inputs ki states
+=======
+  // Manual custom inputs states
+>>>>>>> 64c7ec0 (added new theme)
   const [manualCal, setManualCal] = useState("");
   const [manualProt, setManualProt] = useState("");
 
@@ -53,7 +73,16 @@ export default function App() {
     protein: false,
   });
 
+<<<<<<< HEAD
   // 💾 EFFECT: DATA KO LOCAL STORAGE MEIN SAVE KARNA
+=======
+  // Workout form states
+  const [exerciseName, setExerciseName] = useState("");
+  const [weightInput, setWeightInput] = useState("");
+  const [repsInput, setRepsInput] = useState("");
+
+  // LOCAL STORAGE EFFECTS
+>>>>>>> 64c7ec0 (added new theme)
   useEffect(() => {
     localStorage.setItem("flex_profileName", profileName);
     localStorage.setItem("flex_targetCalorie", targetCalorie.toString());
@@ -76,16 +105,32 @@ export default function App() {
   // TIMER CONTROL LOGIC
   useEffect(() => {
     let interval = null;
+<<<<<<< HEAD
     if (isTimerRunning && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
       setIsTimerRunning(false);
+=======
+    if (isTimerRunning) {
+      if (timeLeft > 0) {
+        interval = setInterval(() => {
+          setTimeLeft((prev) => prev - 1);
+        }, 1000);
+      } else {
+        // Stop timer when reached 0
+        const timerId = setTimeout(() => {
+          setIsTimerRunning(false);
+        }, 0);
+        return () => clearTimeout(timerId);
+      }
+>>>>>>> 64c7ec0 (added new theme)
     }
     return () => clearInterval(interval);
   }, [isTimerRunning, timeLeft]);
 
+<<<<<<< HEAD
   const toggleTimer = () => setIsTimerRunning(!isTimerRunning);
   const resetTimer = () => {
     setIsTimerRunning(false);
@@ -146,6 +191,17 @@ export default function App() {
   const [weightInput, setWeightInput] = useState("");
   const [repsInput, setRepsInput] = useState("");
 
+=======
+  const caloriePercentage = Math.min(
+    (currentCalorie / targetCalorie) * 100,
+    100
+  );
+  const proteinPercentage = Math.min(
+    (currentProtein / targetProtein) * 100,
+    100
+  );
+
+>>>>>>> 64c7ec0 (added new theme)
   const handleAddWorkout = () => {
     if (!exerciseName.trim()) return;
 
@@ -171,7 +227,11 @@ export default function App() {
   const removeWaterGlass = () =>
     setWaterGlasses((prev) => Math.max(0, prev - 1));
 
+<<<<<<< HEAD
   // 🥩 MACROS ACTIONS
+=======
+  // MACROS ACTIONS
+>>>>>>> 64c7ec0 (added new theme)
   const handleQuickLog = (cal, prot) => {
     setCalorie((prev) => prev + cal);
     setProtein((prev) => prev + prot);
@@ -213,6 +273,7 @@ export default function App() {
     setEditMode({ ...editMode, protein: false });
   };
 
+<<<<<<< HEAD
   return (
     <>
       <div className="bg-slate-200/80 min-h-screen relative pt-5 pb-5 pl-3 flex overflow-hidden font-sans costum-scrollbar">
@@ -826,5 +887,110 @@ export default function App() {
         </main>
       </div>
     </>
+=======
+  const handleOpenSettings = () => {
+    setActiveTab("settings");
+    setTempName(profileName);
+    setTempCalorie(targetCalorie);
+    setTempProtein(targetProtein);
+  };
+
+  return (
+    <div className="bg-slate-200/80 min-h-screen relative p-3 sm:p-5 flex flex-col lg:flex-row gap-4 font-sans no-scrollbar">
+      {/* Dynamic Background Glows */}
+      <BackgroundGlows activeTab={activeTab} />
+
+      {/* Sidebar Navigation */}
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onOpenSettings={handleOpenSettings}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 z-10">
+        {/* Mobile Header */}
+        <Header
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+          profileName={profileName}
+        />
+
+        <main className="flex-1 p-2 sm:p-4 lg:p-6 overflow-x-hidden no-scrollbar">
+          {activeTab === "dashboard" && (
+            <DashboardView
+              profileName={profileName}
+              currentCalorie={currentCalorie}
+              targetCalorie={targetCalorie}
+              currentProtein={currentProtein}
+              targetProtein={targetProtein}
+              caloriePercentage={caloriePercentage}
+              proteinPercentage={proteinPercentage}
+              workoutList={workoutList}
+              waterGlasses={waterGlasses}
+              targetWaterGlasses={targetWaterGlasses}
+              addWaterGlass={addWaterGlass}
+              removeWaterGlass={removeWaterGlass}
+            />
+          )}
+
+          {activeTab === "workout" && (
+            <WorkoutView
+              exerciseName={exerciseName}
+              setExerciseName={setExerciseName}
+              weightInput={weightInput}
+              setWeightInput={setWeightInput}
+              repsInput={repsInput}
+              setRepsInput={setRepsInput}
+              handleAddWorkout={handleAddWorkout}
+              workoutList={workoutList}
+              handleDeleteWorkout={handleDeleteWorkout}
+              timeLeft={timeLeft}
+              setTimeLeft={setTimeLeft}
+              isTimerRunning={isTimerRunning}
+              setIsTimerRunning={setIsTimerRunning}
+            />
+          )}
+
+          {activeTab === "logger" && (
+            <MacroLoggerView
+              currentCalorie={currentCalorie}
+              targetCalorie={targetCalorie}
+              currentProtein={currentProtein}
+              targetProtein={targetProtein}
+              manualCal={manualCal}
+              setManualCal={setManualCal}
+              manualProt={manualProt}
+              setManualProt={setManualProt}
+              handleQuickLog={handleQuickLog}
+              handleManualLog={handleManualLog}
+              handleResetIntake={handleResetIntake}
+            />
+          )}
+
+          {activeTab === "settings" && (
+            <SettingsView
+              profileName={profileName}
+              targetCalorie={targetCalorie}
+              targetProtein={targetProtein}
+              editMode={editMode}
+              setEditMode={setEditMode}
+              tempName={tempName}
+              setTempName={setTempName}
+              tempCalorie={tempCalorie}
+              setTempCalorie={setTempCalorie}
+              tempProtein={tempProtein}
+              setTempProtein={setTempProtein}
+              handleSaveName={handleSaveName}
+              handleSaveCalorie={handleSaveCalorie}
+              handleSaveProtein={handleSaveProtein}
+            />
+          )}
+        </main>
+      </div>
+    </div>
+>>>>>>> 64c7ec0 (added new theme)
   );
 }

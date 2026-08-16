@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: "Plus Jakarta Sans", sans-serif;
+<<<<<<< HEAD
   /* Tailwind v4 ko class-based dark mode batane ka sahi tareeqa */
   --variant-dark: .dark;
 }
@@ -31,6 +32,8 @@ body {
 @import "tailwindcss";
 
 @theme {
+=======
+>>>>>>> 64c7ec0 (added new theme)
   --variant-dark: .dark;
 }
 
@@ -38,9 +41,31 @@ html,
 body {
   margin: 0;
   padding: 0;
+<<<<<<< HEAD
   height: 100%;
   /* Ye line ensure karti hai ke background change smoothly ho */
+=======
+  min-height: 100%;
+  background-color: rgb(226, 232, 240);
+>>>>>>> 64c7ec0 (added new theme)
   transition:
     background-color 0.4s ease,
     color 0.4s ease;
 }
+<<<<<<< HEAD
+=======
+
+/* Custom scrollbars utilities */
+.costum-scrollbar::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.costum-scrollbar,
+.custom-scrollbar,
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+>>>>>>> 64c7ec0 (added new theme)
