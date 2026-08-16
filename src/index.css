@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  /* Tailwind v4 ko class-based dark mode batane ka sahi tareeqa */
+  --variant-dark: .dark;
+}
+
+html,
+body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* Smooth transitions jab pooray page ka background badle */
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
+}
+
+/* Custom scrollbars ko hide karne ke liye utilities */
+.costum-scrollbar::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE aur Edge */
+  scrollbar-width: none; /* Firefox */
+}
+@import "tailwindcss";
+
+@theme {
+  --variant-dark: .dark;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* Ye line ensure karti hai ke background change smoothly ho */
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
